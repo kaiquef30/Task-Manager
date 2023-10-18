@@ -19,7 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -32,7 +32,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity registerUser(@Valid @RequestBody RegistrationBody registrationBody) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationBody registrationBody) {
         try {
             authenticationService.registerUser(registrationBody);
             return ResponseEntity.status(HttpStatus.OK).body(authenticationMessageConfig.getUserSuccessfullyRegistered());
@@ -59,7 +59,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity verifyEmail(@RequestParam String token) {
+    public ResponseEntity<?> verifyEmail(@RequestParam String token) {
         if (authenticationService.verifyUser(token)) {
             return ResponseEntity.ok().build();
         } else {
@@ -73,7 +73,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgot")
-    public ResponseEntity forgotPassword(@RequestParam String email) {
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
         try {
             authenticationService.forgotPassword(email);
             return ResponseEntity.status(HttpStatus.OK).body(authenticationMessageConfig.getForgotPasswordOk());
@@ -86,7 +86,7 @@ public class AuthenticationController {
 
     @Operation(summary = "method to reset password", method = "POST")
     @PostMapping("/reset")
-    public ResponseEntity resetPassword(@Valid @RequestBody PasswordResetBody passwordResetBody) {
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetBody passwordResetBody) {
         authenticationService.resetPassword(passwordResetBody);
         return ResponseEntity.ok().build();
     }
