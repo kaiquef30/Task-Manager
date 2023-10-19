@@ -37,7 +37,7 @@ public class TeamsController {
     }
 
 
-    @AuthenticatedUser(requiredRole = "USER")
+    @AuthenticatedUser(requiredRoles = "USER")
     @GetMapping
     public List<Team> getAllTeams(@AuthenticationPrincipal User authenticatedUser) {
         return teamService.getAllTeams();
@@ -50,7 +50,7 @@ public class TeamsController {
             content = {@Content(schema = @Schema(implementation = TeamsDto.class))})
     @ApiResponse(responseCode = "409", description = "Team already exists!", content = @Content)
     @ApiResponse(responseCode = "403", description = "You are not allowed to create a new team", content = @Content)
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createTeam(@AuthenticationPrincipal User authenticatedUser,
                                              @Valid @RequestBody TeamsDto teamsDto) {
@@ -63,7 +63,7 @@ public class TeamsController {
     }
 
 
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @DeleteMapping("/{teamId}")
     public ResponseEntity<?> deleteTeam(@PathVariable Long teamId,
                            @AuthenticationPrincipal User authenticatedUser){
@@ -77,7 +77,7 @@ public class TeamsController {
 
     @ApiResponse(responseCode = "200", description = "User successfully added to team.", content = @Content)
     @ApiResponse(responseCode = "404", description = "Team not found!", content = @Content)
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @PutMapping("/{teamId}")
     public ResponseEntity<?> updateTeam(@PathVariable Long teamId, @RequestBody TeamsDto updatedTeamDto,
                            @AuthenticationPrincipal User authenticatedUser) {
@@ -93,7 +93,7 @@ public class TeamsController {
     @ApiResponse(responseCode = "200", description = "User successfully added to team.", content = @Content)
     @ApiResponse(responseCode = "404", description = "User or Team not found!", content = @Content)
     @ApiResponse(responseCode = "409", description = "The user is already on the team", content = @Content)
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @PostMapping("/{teamId}/addUser/{userId}")
     public ResponseEntity<?> addUserToTeam(@PathVariable Long teamId, @PathVariable Long userId,
                               @AuthenticationPrincipal User authenticatedUser) {
@@ -109,7 +109,7 @@ public class TeamsController {
         }
     }
 
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @DeleteMapping("/{teamId}/removeUser/{userId}")
     public ResponseEntity<?> removeUserFromTeam(@PathVariable Long teamId, @PathVariable Long userId,
                                    @AuthenticationPrincipal User authenticatedUser) {
@@ -122,6 +122,4 @@ public class TeamsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(teamMessagesConfig.getUserNotFound());
         }
     }
-
-
 }
