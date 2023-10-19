@@ -1,7 +1,7 @@
 package com.projectmicrosoft.microsoft.api.security;
 
 
-
+import com.projectmicrosoft.microsoft.enums.UserRoles;
 import com.projectmicrosoft.microsoft.model.User;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.JoinPoint;
@@ -14,6 +14,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Objects;
 
 @Aspect
@@ -25,33 +26,48 @@ public class AuthenticationAspect {
     @Before("@annotation(authenticatedUser)")
     public void checkAuthentication(JoinPoint joinPoint, AuthenticatedUser authenticatedUser) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (Objects.isNull(authentication) || !(authentication.getPrincipal() instanceof User)) {
+        if (Objects.isNull(authentication) || !(authentication.getPrincipal() instanceof User user)) {
             sendUnauthorizedResponse();
+            return;
         }
-        User user = (User) authentication.getPrincipal();
-        String requiredRole = authenticatedUser.requiredRole();
-        if (!userHasRequiredRole(user, requiredRole)) {
+        String[] requiredRoles = authenticatedUser.requiredRoles();
+
+        if (!userHasRequiredRoles(user, requiredRoles)) {
             sendUnauthorizedResponse();
         }
     }
 
     private void sendUnauthorizedResponse() {
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        HttpServletResponse response = ((ServletRequestAttributes)
+                Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
         if (response != null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            try {
-                response.getWriter().write(PERMISSION_DENIED);
-                response.getWriter().flush();
-                response.getWriter().close();
+            try (OutputStream outputStream = response.getOutputStream()) {
+                outputStream.write(PERMISSION_DENIED.getBytes());
+                outputStream.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private boolean userHasRequiredRole(User user, String requiredRole) {
-        return user.getRoles() != null && user.getRoles().getRole().equals(requiredRole);
+
+    private boolean userHasRequiredRoles(User user, String[] requiredRoles) {
+        if (requiredRoles.length == 0) {
+            return true;
+        }
+
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            return false;
+        }
+
+        for (String requiredRole : requiredRoles) {
+            for (UserRoles userRole : user.getRoles()) {
+                if (userRole.name().equals(requiredRole)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
-
-
 }
