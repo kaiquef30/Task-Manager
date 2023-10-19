@@ -1,14 +1,15 @@
 package com.projectmicrosoft.microsoft.api.security;
 
 
-import java.lang.annotation.*;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AuthenticatedUser {
 
-    String requiredRole() default "";
-
+    String[] requiredRoles() default {};
 }
