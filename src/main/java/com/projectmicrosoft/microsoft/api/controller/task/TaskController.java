@@ -30,7 +30,7 @@ public class TaskController {
         this.taskMessageConfig = taskMessageConfig;
     }
 
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @PostMapping("/create")
     public ResponseEntity<?> createTask(@RequestBody TaskDto taskDto,
                                         @RequestParam(value = "attachments", required = false)
@@ -44,14 +44,13 @@ public class TaskController {
         }
     }
 
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @PutMapping("/update/{taskId}")
     public ResponseEntity<?> updateTask(@PathVariable Long taskId, @RequestBody TaskDto taskDto,
                                         @RequestParam(value = "attachments", required = false)
                                         MultipartFile[] attachments) {
         try {
-            taskService.updateTask(taskId, taskDto, attachments);
-            return ResponseEntity.status(HttpStatus.OK).body(taskMessageConfig.getTaskUpdatedSuccessfully());
+            return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(taskId, taskDto, attachments));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(taskMessageConfig.getErrorProcessingAttachments());
@@ -60,7 +59,7 @@ public class TaskController {
         }
     }
 
-    @AuthenticatedUser(requiredRole = "USER")
+    @AuthenticatedUser(requiredRoles = "USER")
     @GetMapping("/search/{taskId}")
     public ResponseEntity<?> getTaskById(@PathVariable Long taskId) {
         Task taskFound;
@@ -72,5 +71,14 @@ public class TaskController {
         }
     }
 
-
+    @AuthenticatedUser(requiredRoles = "ADMIN")
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
+        try {
+            taskService.deleteTask(taskId);
+            return ResponseEntity.noContent().build();
+        } catch (TaskNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
