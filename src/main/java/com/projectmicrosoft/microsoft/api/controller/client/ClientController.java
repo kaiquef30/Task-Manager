@@ -31,7 +31,7 @@ public class ClientController {
         this.clientMessageConfig = clientMessageConfig;
     }
 
-    @AuthenticatedUser(requiredRole = "USER")
+    @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Display all customers")
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
@@ -39,7 +39,7 @@ public class ClientController {
         return ResponseEntity.ok(clients);
     }
 
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @Operation(summary = "Register a new customer")
     @ApiResponse(responseCode = "201", description = "Successfully registered client!",
             content = {@Content(schema = @Schema(implementation = ClientDto.class))})
@@ -50,7 +50,7 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.registerClient(clientDto));
     }
 
-    @AuthenticatedUser(requiredRole = "USER")
+    @AuthenticatedUser(requiredRoles = "USER")
     @Operation(summary = "Search customer by name")
     @ApiResponse(responseCode = "200", description = "Customer successfully found.",
             content = {@Content(schema = @Schema(implementation = Client.class))})
@@ -59,11 +59,11 @@ public class ClientController {
     @GetMapping("/{clientId}")
     public ResponseEntity<Client> getClientById(@PathVariable Long clientId) {
         return clientService.getClientById(clientId)
-                .map(client -> ResponseEntity.ok(client))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @Operation(summary = "Delete customer")
     @ApiResponse(responseCode = "204", description = "Customer successfully deleted.", content = @Content)
     @ApiResponse(responseCode = "404", description = "Customer not found.", content = @Content)
@@ -74,7 +74,7 @@ public class ClientController {
         return ResponseEntity.noContent().build();
     }
 
-    @AuthenticatedUser(requiredRole = "ADMIN")
+    @AuthenticatedUser(requiredRoles = "ADMIN")
     @Operation(summary = "Update customer")
     @ApiResponse(responseCode = "204", description = "Customer successfully updated.", content =
             {@Content(schema = @Schema(implementation = ClientDto.class))})
