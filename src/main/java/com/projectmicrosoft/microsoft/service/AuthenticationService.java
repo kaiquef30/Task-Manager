@@ -8,6 +8,7 @@ import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
 import com.projectmicrosoft.microsoft.enums.UserRoles;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
+import com.projectmicrosoft.microsoft.exception.InvalidCredentialsException;
 import com.projectmicrosoft.microsoft.exception.UserAlreadyExistsException;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.model.VerificationToken;
@@ -49,27 +50,23 @@ public class AuthenticationService {
         }
 
         User user = modelMapper.map(registrationBody, User.class);
-        user.setRoles(UserRoles.ADMIN);
+        user.setRoles(List.of(UserRoles.USER));
         user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
         VerificationToken verificationToken = createVerificationToken(user);
         emailService.sendVerificationEmail(verificationToken);
         return userRepository.save(user);
     }
 
-    public LoginResponse loginUser(LoginBody loginBody) throws EmailFailureException {
-        Optional<User> opUser = userRepository.findByEmailIgnoreCase(loginBody.getEmail());
-        if (opUser.isPresent()) {
-            User user = opUser.get();
-            if (encryptionService.verifyPassword(loginBody.getPassword(), user.getPassword())) {
-                if (user.isEmailVerified()) {
-                    String jwt = jwtService.generateJWT(user);
-                    return new LoginResponse(true, jwt);
-                } else {
-                    return handleUnverifiedUser(user);
-                }
-            }
+    public LoginResponse loginUser(LoginBody loginBody) throws EmailFailureException,
+            EmailNotFoundException, InvalidCredentialsException {
+        User user = findUserByEmail(loginBody.getEmail());
+        validatePassword(loginBody.getPassword(), user);
+        if (user.isEmailVerified()) {
+            String jwt = jwtService.generateJWT(user);
+            return new LoginResponse(true, jwt);
+        } else {
+            return handleUnverifiedUser(user);
         }
-        return null;
     }
 
     @Transactional
@@ -122,6 +119,7 @@ public class AuthenticationService {
         return new LoginResponse(false, reason);
     }
 
+    @Transactional
     public VerificationToken createVerificationToken(User user) {
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(jwtService.generateVerificationJWT(user));
@@ -129,6 +127,17 @@ public class AuthenticationService {
         verificationToken.setUser(user);
         user.getVerificationTokens().add(verificationToken);
         return verificationToken;
+    }
+
+    private User findUserByEmail(String email) throws EmailNotFoundException {
+        Optional<User> opUser = userRepository.findByEmailIgnoreCase(email);
+        return opUser.orElseThrow(EmailNotFoundException::new);
+    }
+
+    private void validatePassword(String inputPassword, User user) throws InvalidCredentialsException {
+        if (!encryptionService.verifyPassword(inputPassword, user.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
     }
 
 }
