@@ -34,8 +34,11 @@ public class User implements UserDetails {
     private String lastName;
 
     @Column(name = "office")
+    @ElementCollection(targetClass = UserRoles.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private UserRoles roles;
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    private List<UserRoles> roles;
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -92,15 +95,19 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.roles == UserRoles.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        for (UserRoles role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toString()));
+        }
+        return authorities;
     }
 
-    public UserRoles getRoles() {
+    public List<UserRoles> getRoles() {
         return roles;
     }
 
-    public void setRoles(UserRoles roles) {
+    public void setRoles(List<UserRoles> roles) {
         this.roles = roles;
     }
 
