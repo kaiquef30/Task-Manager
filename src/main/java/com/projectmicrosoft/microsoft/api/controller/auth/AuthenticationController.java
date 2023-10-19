@@ -7,11 +7,15 @@ import com.projectmicrosoft.microsoft.api.dto.PasswordResetBody;
 import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
+import com.projectmicrosoft.microsoft.exception.InvalidCredentialsException;
 import com.projectmicrosoft.microsoft.exception.UserAlreadyExistsException;
 import com.projectmicrosoft.microsoft.exception.messages.AuthenticationMessageConfig;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +35,16 @@ public class AuthenticationController {
         this.authenticationMessageConfig = authenticationMessageConfig;
     }
 
+
+    @Operation(summary = "Register a new user")
+    @ApiResponse(responseCode = "200", description = "Registration completed successfully.",
+            content = {@Content(schema = @Schema(implementation = RegistrationBody.class))})
+    @ApiResponse(responseCode = "409", description = "Email already registered, please try another one.", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Internal server error.", content = @Content)
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationBody registrationBody) {
         try {
-            authenticationService.registerUser(registrationBody);
-            return ResponseEntity.status(HttpStatus.OK).body(authenticationMessageConfig.getUserSuccessfullyRegistered());
+            return ResponseEntity.status(HttpStatus.OK).body(authenticationService.registerUser(registrationBody));
         } catch (UserAlreadyExistsException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(authenticationMessageConfig.getEmailAlreadyRegistered());
         } catch (EmailFailureException e) {
@@ -43,20 +52,27 @@ public class AuthenticationController {
         }
     }
 
+    @Operation(summary = "Log in")
+    @ApiResponse(responseCode = "200", description = "Login successfully.",
+            content = {@Content(schema = @Schema(implementation = LoginBody.class))})
+    @ApiResponse(responseCode = "403", description = "Unverified email.", content = @Content)
+    @ApiResponse(responseCode = "404", description = "unregistered email.", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Invalid credentials.", content = @Content)
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginBody loginBody) {
         LoginResponse response;
         try {
             response = authenticationService.loginUser(loginBody);
+            return ResponseEntity.ok(response);
         } catch (EmailFailureException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(authenticationMessageConfig.getEmailNotVerified());
-        }
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
+        } catch (EmailNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(authenticationMessageConfig.getEmailInvalid());
+        } catch (InvalidCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authenticationMessageConfig.getInvalidCredentials());
         }
     }
+
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyEmail(@RequestParam String token) {
@@ -78,7 +94,7 @@ public class AuthenticationController {
             authenticationService.forgotPassword(email);
             return ResponseEntity.status(HttpStatus.OK).body(authenticationMessageConfig.getForgotPasswordOk());
         } catch (EmailNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authenticationMessageConfig.getForgotPasswordEmailInvalid());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authenticationMessageConfig.getEmailInvalid());
         } catch (EmailFailureException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(authenticationMessageConfig.getErrorSendingVerificationEmail());
         }
