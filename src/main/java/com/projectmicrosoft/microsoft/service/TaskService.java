@@ -1,15 +1,15 @@
 package com.projectmicrosoft.microsoft.service;
 
+import com.projectmicrosoft.microsoft.api.dto.TaskDto;
+import com.projectmicrosoft.microsoft.exception.InvalidAttachmentException;
 import com.projectmicrosoft.microsoft.exception.TaskNotFoundException;
-import org.springframework.stereotype.Service;
+import com.projectmicrosoft.microsoft.model.Task;
+import com.projectmicrosoft.microsoft.model.User;
+import com.projectmicrosoft.microsoft.repository.TaskRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.modelmapper.ModelMapper;
-
-import com.projectmicrosoft.microsoft.repository.TaskRepository;
-import com.projectmicrosoft.microsoft.model.Task;
-import com.projectmicrosoft.microsoft.api.dto.TaskDto;
-import com.projectmicrosoft.microsoft.model.User;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class TaskService {
     }
 
 
-    public Task createTask(TaskDto taskDto, MultipartFile[] attachments) throws IOException {
+    public Task createTask(TaskDto taskDto, MultipartFile[] attachments) throws IOException, InvalidAttachmentException {
         Task task = modelMapper.map(taskDto, Task.class);
 
         Long currentUserId = getCurrentUserId();
@@ -43,9 +43,13 @@ public class TaskService {
 
             for (MultipartFile attachment : attachments) {
                 try {
-                    byte[] fileBytes = attachment.getBytes();
-                    String base64 = Base64.getEncoder().encodeToString(fileBytes);
-                    attachmentBase64List.add(base64);
+                    if (isValidAttachment(attachment)) {
+                        byte[] fileBytes = attachment.getBytes();
+                        String base64 = Base64.getEncoder().encodeToString(fileBytes);
+                        attachmentBase64List.add(base64);
+                    } else {
+                        throw new InvalidAttachmentException();
+                    }
                 } catch (IOException e) {
                     throw new IOException();
                 }
@@ -53,18 +57,13 @@ public class TaskService {
 
             task.setAttachments(attachmentBase64List);
         }
-
         return taskRepository.save(task);
     }
 
 
-
-    public Task updateTask(Long taskId, TaskDto taskDto, MultipartFile[] attachments) throws IOException, TaskNotFoundException {
-        Task existingTask = taskRepository.findById(taskId)
-                .orElseThrow(TaskNotFoundException::new);
+    public Task updateTask(Long taskId, TaskDto taskDto, MultipartFile[] attachments) throws IOException{
 
         Task updatedTask = modelMapper.map(taskDto, Task.class);
-        updatedTask.setId(existingTask.getId());
         if (attachments != null && attachments.length > 0) {
             List<String> attachmentBase64List = new ArrayList<>();
 
@@ -78,8 +77,6 @@ public class TaskService {
                 }
             }
             updatedTask.setAttachments(attachmentBase64List);
-        } else {
-            updatedTask.setAttachments(existingTask.getAttachments());
         }
         return taskRepository.save(updatedTask);
     }
@@ -124,5 +121,24 @@ public class TaskService {
         } else {
             throw new TaskNotFoundException();
         }
+    }
+
+    private boolean isValidAttachment(MultipartFile attachment) {
+        if (attachment == null) {
+            return false;
+        }
+
+        long maxSizeBytes = 10 * 1024 * 1024;
+        if (attachment.getSize() > maxSizeBytes) {
+            return false;
+        }
+
+        String contentType = attachment.getContentType();
+
+        if (contentType != null) {
+            return contentType.startsWith("image/") || contentType.equals("application/pdf") || contentType.startsWith("video/");
+        }
+
+        return false;
     }
 }
