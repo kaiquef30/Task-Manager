@@ -2,7 +2,7 @@ package com.projectmicrosoft.microsoft.api.controller.client;
 
 import com.projectmicrosoft.microsoft.api.dto.ClientDto;
 import com.projectmicrosoft.microsoft.api.security.AuthenticatedUser;
-import com.projectmicrosoft.microsoft.exception.TeamNotFoundException;
+import com.projectmicrosoft.microsoft.exception.ClientNotFoundException;
 import com.projectmicrosoft.microsoft.exception.messages.ClientMessageConfig;
 import com.projectmicrosoft.microsoft.model.Client;
 import com.projectmicrosoft.microsoft.model.User;
@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,23 +40,22 @@ public class ClientController {
         return ResponseEntity.ok(clients);
     }
 
-    @AuthenticatedUser(requiredRoles = "ADMIN")
+    @AuthenticatedUser(requiredRoles = {"ADMIN", "USER"})
     @Operation(summary = "Register a new customer")
     @ApiResponse(responseCode = "201", description = "Successfully registered client!",
             content = {@Content(schema = @Schema(implementation = ClientDto.class))})
     @ApiResponse(responseCode = "409", description = "Client already exists!", content = @Content)
-    @ApiResponse(responseCode = "403", description = "You are not allowed to register a new customer", content = @Content)
     @PostMapping("/create")
-    public ResponseEntity<?> registerClient(@RequestBody ClientDto clientDto, @AuthenticationPrincipal User user) {
-        return ResponseEntity.status(HttpStatus.OK).body(clientService.registerClient(clientDto));
+    public ResponseEntity<?> registerClient(@RequestBody @Valid ClientDto clientDto, @AuthenticationPrincipal User user) {
+        Client clientRegistered = clientService.registerClient(clientDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientRegistered);
     }
 
-    @AuthenticatedUser(requiredRoles = "USER")
+    @AuthenticatedUser(requiredRoles = {"USER"})
     @Operation(summary = "Search customer by name")
     @ApiResponse(responseCode = "200", description = "Customer successfully found.",
             content = {@Content(schema = @Schema(implementation = Client.class))})
-    @ApiResponse(responseCode = "409", description = "Client already exists!", content = @Content)
-    @ApiResponse(responseCode = "403", description = "You are not allowed to register a new customer", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Customer not found.", content = @Content)
     @GetMapping("/{clientId}")
     public ResponseEntity<Client> getClientById(@PathVariable Long clientId) {
         return clientService.getClientById(clientId)
@@ -63,30 +63,33 @@ public class ClientController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @AuthenticatedUser(requiredRoles = "ADMIN")
+    @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Delete customer")
     @ApiResponse(responseCode = "204", description = "Customer successfully deleted.", content = @Content)
     @ApiResponse(responseCode = "404", description = "Customer not found.", content = @Content)
-    @ApiResponse(responseCode = "403", description = "You are not allowed to delete this customer.", content = @Content)
     @DeleteMapping("/{clientId}")
     public ResponseEntity<?> deleteClient(@PathVariable Long clientId) {
-        clientService.deleteClient(clientId);
-        return ResponseEntity.noContent().build();
+        try {
+            clientService.deleteClient(clientId);
+            return ResponseEntity.noContent().build();
+        } catch (ClientNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(clientMessageConfig.getClientNotFound());
+        }
     }
 
-    @AuthenticatedUser(requiredRoles = "ADMIN")
+    @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Update customer")
-    @ApiResponse(responseCode = "204", description = "Customer successfully updated.", content =
+    @ApiResponse(responseCode = "200", description = "Customer successfully updated.", content =
             {@Content(schema = @Schema(implementation = ClientDto.class))})
     @ApiResponse(responseCode = "404", description = "Customer not found.", content = @Content)
     @ApiResponse(responseCode = "403", description = "You are not allowed to update this customer.", content = @Content)
     @PutMapping("/{clientId}")
-    public ResponseEntity<Client> updateClient(@PathVariable Long clientId, @RequestBody ClientDto clientDto) {
+    public ResponseEntity<?> updateClient(@PathVariable Long clientId, @RequestBody ClientDto clientDto) {
         try {
-            Client updatedClient = clientService.updateClient(clientId, clientDto);
-        } catch (TeamNotFoundException e) {
-            throw new RuntimeException(e);
+            Client clientUpdated = clientService.updateClient(clientId, clientDto);
+            return ResponseEntity.status(HttpStatus.OK).body(clientUpdated);
+        } catch (ClientNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(clientMessageConfig.getClientNotFound());
         }
-        return null;
     }
 }
