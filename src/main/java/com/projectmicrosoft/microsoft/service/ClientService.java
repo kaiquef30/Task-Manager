@@ -2,9 +2,10 @@ package com.projectmicrosoft.microsoft.service;
 
 
 import com.projectmicrosoft.microsoft.api.dto.ClientDto;
-import com.projectmicrosoft.microsoft.exception.TeamNotFoundException;
+import com.projectmicrosoft.microsoft.exception.ClientNotFoundException;
 import com.projectmicrosoft.microsoft.model.Client;
 import com.projectmicrosoft.microsoft.repository.ClientRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class ClientService {
     }
 
 
+    @Transactional
     public Client registerClient(ClientDto clientDto) {
         Client client = modelMapper.map(clientDto, Client.class);
         return clientRepository.save(client);
@@ -39,7 +41,8 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
-    public Client updateClient(Long clientId, ClientDto clientDto) throws TeamNotFoundException {
+    @Transactional
+    public Client updateClient(Long clientId, ClientDto clientDto) throws ClientNotFoundException {
         Optional<Client> existingClientOptional = clientRepository.findById(clientId);
 
         if (existingClientOptional.isPresent()) {
@@ -48,11 +51,15 @@ public class ClientService {
             return clientRepository.save(existingClient);
         }
 
-        throw new TeamNotFoundException();
+        throw new ClientNotFoundException();
     }
 
-    public void deleteClient(Long clientId) {
-        clientRepository.deleteById(clientId);
+    @Transactional
+    public void deleteClient(Long clientId) throws ClientNotFoundException {
+        if (clientRepository.existsById(clientId)) {
+            clientRepository.deleteById(clientId);
+        } else {
+            throw new ClientNotFoundException();
+        }
     }
-
 }
