@@ -10,8 +10,6 @@ public class AuthenticationMessageConfig {
 
     private String forgotPasswordOk;
 
-    private String forgotPasswordEmailInvalid;
-
     private String userSuccessfullyRegistered;
 
     private String emailAlreadyRegistered;
@@ -102,14 +100,6 @@ public class AuthenticationMessageConfig {
 
     public void setForgotPasswordOk(String forgotPasswordOk) {
         this.forgotPasswordOk = forgotPasswordOk;
-    }
-
-    public String getForgotPasswordEmailInvalid() {
-        return forgotPasswordEmailInvalid;
-    }
-
-    public void setForgotPasswordEmailInvalid(String forgotPasswordEmailInvalid) {
-        this.forgotPasswordEmailInvalid = forgotPasswordEmailInvalid;
     }
 
 }
