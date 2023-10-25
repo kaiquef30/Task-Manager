@@ -18,6 +18,16 @@ public class TaskMessageConfig {
 
     private String errorProcessingAttachments;
 
+    private String invalidAttachment;
+
+    public String getInvalidAttachment() {
+        return invalidAttachment;
+    }
+
+    public void setInvalidAttachment(String invalidAttachment) {
+        this.invalidAttachment = invalidAttachment;
+    }
+
     public String getErrorProcessingAttachments() {
         return errorProcessingAttachments;
     }
