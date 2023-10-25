@@ -9,7 +9,6 @@ import com.projectmicrosoft.microsoft.enums.UserRoles;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
 import com.projectmicrosoft.microsoft.exception.InvalidCredentialsException;
-import com.projectmicrosoft.microsoft.exception.UserAlreadyExistsException;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.model.VerificationToken;
 import com.projectmicrosoft.microsoft.repository.TokenRepository;
@@ -44,11 +43,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public User registerUser(RegistrationBody registrationBody) throws UserAlreadyExistsException, EmailFailureException {
-        if (userRepository.findByEmailIgnoreCase(registrationBody.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsException();
-        }
-
+    public User registerUser(RegistrationBody registrationBody) throws EmailFailureException {
         User user = modelMapper.map(registrationBody, User.class);
         user.setRoles(List.of(UserRoles.USER));
         user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
@@ -57,19 +52,15 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    public LoginResponse loginUser(LoginBody loginBody) throws EmailFailureException,
-            EmailNotFoundException, InvalidCredentialsException {
+    public LoginResponse loginUser(LoginBody loginBody) throws EmailFailureException, InvalidCredentialsException {
         User user = findUserByEmail(loginBody.getEmail());
         validatePassword(loginBody.getPassword(), user);
-        if (user.isEmailVerified()) {
-            String jwt = jwtService.generateJWT(user);
-            return new LoginResponse(true, jwt);
-        } else {
-            return handleUnverifiedUser(user);
-        }
+
+        String jwt = jwtService.generateJWT(user);
+        return new LoginResponse(true, jwt);
     }
 
-    @Transactional
+
     public boolean verifyUser(String token) {
         Optional<VerificationToken> opToken = tokenRepository.findByToken(token);
         if (opToken.isPresent()) {
@@ -96,6 +87,7 @@ public class AuthenticationService {
         }
     }
 
+    @Transactional
     public void resetPassword(PasswordResetBody body) {
         String email = jwtService.getResetPasswordEmail(body.getToken());
         Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
@@ -106,7 +98,7 @@ public class AuthenticationService {
         }
     }
 
-    private LoginResponse handleUnverifiedUser(User user) throws EmailFailureException {
+    public LoginResponse handleUnverifiedUser(User user) throws EmailFailureException {
         List<VerificationToken> verificationTokens = user.getVerificationTokens();
         boolean resend = verificationTokens.isEmpty() ||
                 verificationTokens.get(0).getCreatedTimestamp().before(new Timestamp(System.currentTimeMillis() - (60 * 60 * 1000)));
@@ -129,15 +121,18 @@ public class AuthenticationService {
         return verificationToken;
     }
 
-    private User findUserByEmail(String email) throws EmailNotFoundException {
+    public User findUserByEmail(String email) throws InvalidCredentialsException {
         Optional<User> opUser = userRepository.findByEmailIgnoreCase(email);
-        return opUser.orElseThrow(EmailNotFoundException::new);
-    }
-
-    private void validatePassword(String inputPassword, User user) throws InvalidCredentialsException {
-        if (!encryptionService.verifyPassword(inputPassword, user.getPassword())) {
+        if (opUser.isPresent()) {
+            return opUser.get();
+        } else {
             throw new InvalidCredentialsException();
         }
     }
 
+    public void validatePassword(String inputPassword, User user) throws InvalidCredentialsException {
+        if (!encryptionService.verifyPassword(inputPassword, user.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+    }
 }
