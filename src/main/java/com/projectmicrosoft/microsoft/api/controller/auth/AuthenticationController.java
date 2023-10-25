@@ -8,7 +8,6 @@ import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
 import com.projectmicrosoft.microsoft.exception.InvalidCredentialsException;
-import com.projectmicrosoft.microsoft.exception.UserAlreadyExistsException;
 import com.projectmicrosoft.microsoft.exception.messages.AuthenticationMessageConfig;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.service.AuthenticationService;
@@ -45,8 +44,6 @@ public class AuthenticationController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationBody registrationBody) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(authenticationService.registerUser(registrationBody));
-        } catch (UserAlreadyExistsException ex) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(authenticationMessageConfig.getEmailAlreadyRegistered());
         } catch (EmailFailureException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(authenticationMessageConfig.getInternalServerError());
         }
@@ -66,14 +63,16 @@ public class AuthenticationController {
             return ResponseEntity.ok(response);
         } catch (EmailFailureException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(authenticationMessageConfig.getEmailNotVerified());
-        } catch (EmailNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(authenticationMessageConfig.getEmailInvalid());
         } catch (InvalidCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authenticationMessageConfig.getInvalidCredentials());
         }
     }
 
 
+
+    @Operation(summary = "Method to verify a user")
+    @ApiResponse(responseCode = "200", description = "Email verified successfully.", content = @Content)
+    @ApiResponse(responseCode = "409", description = "Email already verified.", content = @Content)
     @PostMapping("/verify")
     public ResponseEntity<?> verifyEmail(@RequestParam String token) {
         if (authenticationService.verifyUser(token)) {
@@ -83,28 +82,35 @@ public class AuthenticationController {
         }
     }
 
+    @Operation(summary = "method to check logged in user information")
+    @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = User.class))})
     @GetMapping("/me")
-    public ResponseEntity<User> getLoggedInUserProfile(@AuthenticationPrincipal User user) {
+    public ResponseEntity<User> getLoggedInUserProfile(@AuthenticationPrincipal User user, @RequestParam String token) {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "Forgot password")
+    @ApiResponse(responseCode = "200", description = "Email sent to reset password.", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Email not registered.", content = @Content)
     @PostMapping("/forgot")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
         try {
             authenticationService.forgotPassword(email);
             return ResponseEntity.status(HttpStatus.OK).body(authenticationMessageConfig.getForgotPasswordOk());
         } catch (EmailNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authenticationMessageConfig.getEmailInvalid());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(authenticationMessageConfig.getInvalidCredentials());
         } catch (EmailFailureException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(authenticationMessageConfig.getErrorSendingVerificationEmail());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(authenticationMessageConfig.getErrorSendingVerificationEmail());
         }
     }
 
-    @Operation(summary = "method to reset password", method = "POST")
+    @Operation(summary = "method to reset password")
+    @ApiResponse(responseCode = "200", description = "Password reset successfully", content = {@Content(schema =
+    @Schema(implementation = PasswordResetBody.class))})
     @PostMapping("/reset")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordResetBody passwordResetBody) {
         authenticationService.resetPassword(passwordResetBody);
         return ResponseEntity.ok().build();
     }
-
 }
