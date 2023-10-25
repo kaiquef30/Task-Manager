@@ -14,11 +14,7 @@ public class TeamMessagesConfig {
 
     private String teamNotFound;
 
-    private String teamCreatedSuccessfully;
-
     private String teamAlreadyExists;
-
-    private String teamEditedSucessfully;
 
     private String teamDeletedSucessfully;
 
@@ -60,13 +56,6 @@ public class TeamMessagesConfig {
         this.teamDeletedSucessfully = teamDeletedSucessfully;
     }
 
-    public String getTeamEditedSucessfully() {
-        return teamEditedSucessfully;
-    }
-
-    public void setTeamEditedSucessfully(String teamEditedSucessfully) {
-        this.teamEditedSucessfully = teamEditedSucessfully;
-    }
 
     public String getUserSuccessfullyAssociateWithTeam() {
         return userSuccessfullyAssociateWithTeam;
@@ -83,9 +72,6 @@ public class TeamMessagesConfig {
     }
 
 
-    public String getTeamCreatedSuccessfully() {
-        return teamCreatedSuccessfully;
-    }
 
     public String getTeamAlreadyExists() {
         return teamAlreadyExists;
@@ -101,10 +87,6 @@ public class TeamMessagesConfig {
 
     public void setTeamNotFound(String teamNotFound) {
         this.teamNotFound = teamNotFound;
-    }
-
-    public void setTeamCreatedSuccessfully(String teamCreatedSuccessfully) {
-        this.teamCreatedSuccessfully = teamCreatedSuccessfully;
     }
 
     public void setTeamAlreadyExists(String teamAlreadyExists) {
