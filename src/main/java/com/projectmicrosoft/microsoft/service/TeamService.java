@@ -34,7 +34,6 @@ public class TeamService {
     }
 
 
-    @Transactional
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
     }
