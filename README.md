@@ -103,17 +103,7 @@ Esta é uma API de autenticação e gerenciamento de usuários, clientes, tarefa
 A API foi desenvolvida utilizando as seguintes tecnologias:
 
 <div>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original-wordmark.svg" width ="40" height="40"/> Java
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original-wordmark.svg" width ="80" height="80"/>
 </div>
-
-- <i class="devicon-java-plain"></i> Java
-- <i class="devicon-spring-plain"></i> Spring Boot
-- <i class="devicon-spring-plain"></i> Spring Validation
-- <i class="devicon-postgresql-plain"></i> PostgreSQL
-- <i class="devicon-apachemaven-plain"></i> Maven
-- <i class="devicon-spring-plain"></i> Spring Security
-- <i class="devicon-hibernate-plain"></i> Hibernate
-- <i class="devicon-swagger-plain"></i> Swagger
-- <i class="devicon-spring-plain"></i> Spring Data
 
 Essas tecnologias foram escolhidas para criar uma API robusta, segura e eficiente. O Spring Boot proporciona facilidade de desenvolvimento, o Spring Security garante a segurança da aplicação e o Hibernate simplifica o acesso aos dados no banco de dados PostgreSQL. Além disso, o Swagger foi usado para documentar a API e o Maven para gerenciar as dependências do projeto.
