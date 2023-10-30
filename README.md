@@ -96,3 +96,29 @@ Esta é uma API de autenticação e gerenciamento de usuários, clientes, tarefa
   - `DELETE /api/teams/{teamId}/removeUser/{userId}`
   - Remove um usuário de uma equipe.
 
+
+
+## Tecnologias Utilizadas
+
+A API de Autenticação e Gerenciamento foi desenvolvida com a utilização das seguintes tecnologias:
+
+- **Java**: A linguagem de programação principal utilizada para desenvolver a aplicação.
+
+- **Spring Boot**: Framework que facilita o desenvolvimento de aplicativos Java baseados em Spring.
+
+- **Spring Validation**: Utilizado para validar as entradas de dados, garantindo a integridade dos dados do usuário.
+
+- **PostgreSQL**: Sistema de gerenciamento de banco de dados relacional utilizado para armazenar informações de usuários, clientes, tarefas e equipes.
+
+- **Maven**: Ferramenta de automação de compilação e gerenciamento de dependências, utilizada para gerenciar as bibliotecas do projeto.
+
+- **Spring Security**: Utilizado para implementar recursos de segurança, como autenticação e autorização.
+
+- **Hibernate**: Framework de mapeamento objeto-relacional (ORM) utilizado para facilitar a interação com o banco de dados.
+
+- **Swagger**: Framework para documentação de API, permitindo que os desenvolvedores entendam e testem os endpoints da API de forma eficiente.
+
+- **Spring Data**: Facilita a interação com o banco de dados, fornecendo métodos simplificados para realizar operações de CRUD.
+
+Estas tecnologias foram escolhidas para criar uma API robusta, segura e de alto desempenho para atender às necessidades de autenticação, gerenciamento de clientes, tarefas e equipes.
+
