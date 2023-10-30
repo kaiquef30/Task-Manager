@@ -120,5 +120,8 @@ A API de Autenticação e Gerenciamento foi desenvolvida com a utilização das 
 
 - **Spring Data**: Facilita a interação com o banco de dados, fornecendo métodos simplificados para realizar operações de CRUD.
 
-Estas tecnologias foram escolhidas para criar uma API robusta, segura e de alto desempenho para atender às necessidades de autenticação, gerenciamento de clientes, tarefas e equipes.
+- **JUnit**: Framework de testes unitários amplamente utilizado para garantir a qualidade e confiabilidade do código.
 
+- **Mockito**: Biblioteca de mocking usada em conjunto com o JUnit para criar e gerenciar mocks de objetos e simular comportamentos em testes.
+
+Estas tecnologias foram escolhidas para criar uma API robusta, segura e de alto desempenho, com testes unitários bem estruturados para garantir a qualidade do código.
