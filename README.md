@@ -96,15 +96,3 @@ Esta é uma API de autenticação e gerenciamento de usuários, clientes, tarefa
   - `DELETE /api/teams/{teamId}/removeUser/{userId}`
   - Remove um usuário de uma equipe.
 
-
-
-## Tecnologias Utilizadas
-
-A API foi desenvolvida utilizando as seguintes tecnologias:
-
-<div>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original-wordmark.svg" width ="80" height="80"/>
-  <svg style="color: rgb(53, 243, 145); --darkreader-inline-color: #c3b034;" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-darkreader-inline-color=""><title>Spring Security</title><path d="M20.59 2.066 11.993 0 3.41 2.066v6.612h4.557a3.804 3.804 0 0 0 0 .954H3.41v3.106C3.41 19.867 11.994 24 11.994 24s8.582-4.133 8.582-11.258V9.635h-4.545a3.616 3.616 0 0 0 0-.954h4.558zM12 12.262h-.006a3.109 3.109 0 1 1 .006 0zm-.006-4.579a.804.804 0 0 0-.37 1.52v.208l.238.237v.159l.159.159v.159l-.14.14.15.246v.159l-.16.189.223.222.246-.246V9.218a.804.804 0 0 0-.346-1.535zm0 .836a.299.299 0 1 1 .298-.299.299.299 0 0 1-.298.3z" fill="#35f391" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #665906;"></path></svg>
-</div>
-
-Essas tecnologias foram escolhidas para criar uma API robusta, segura e eficiente. O Spring Boot proporciona facilidade de desenvolvimento, o Spring Security garante a segurança da aplicação e o Hibernate simplifica o acesso aos dados no banco de dados PostgreSQL. Além disso, o Swagger foi usado para documentar a API e o Maven para gerenciar as dependências do projeto.
