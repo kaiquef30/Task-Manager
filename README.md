@@ -102,6 +102,10 @@ Esta é uma API de autenticação e gerenciamento de usuários, clientes, tarefa
 
 A API foi desenvolvida utilizando as seguintes tecnologias:
 
+<div>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original-wordmark.svg" width ="40" height="40"/> Java
+</div>
+
 - <i class="devicon-java-plain"></i> Java
 - <i class="devicon-spring-plain"></i> Spring Boot
 - <i class="devicon-spring-plain"></i> Spring Validation
