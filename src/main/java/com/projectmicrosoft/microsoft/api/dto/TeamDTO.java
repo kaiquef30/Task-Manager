@@ -1,11 +1,11 @@
-package com.projectmicrosoft.microsoft.api.dto;
+package com.projectmicrosoft.microsoft.api.DTO;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Hidden
-public class TeamsDto {
+public class TeamDTO {
     @NotNull
     @NotBlank
     private String name;

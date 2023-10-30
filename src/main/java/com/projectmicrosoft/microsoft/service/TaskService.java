@@ -1,6 +1,6 @@
 package com.projectmicrosoft.microsoft.service;
 
-import com.projectmicrosoft.microsoft.api.dto.TaskDto;
+import com.projectmicrosoft.microsoft.api.DTO.TaskDTO;
 import com.projectmicrosoft.microsoft.exception.InvalidAttachmentException;
 import com.projectmicrosoft.microsoft.exception.TaskNotFoundException;
 import com.projectmicrosoft.microsoft.model.Task;
@@ -29,8 +29,12 @@ public class TaskService {
         this.modelMapper = modelMapper;
     }
 
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
 
-    public Task createTask(TaskDto taskDto, MultipartFile[] attachments) throws IOException, InvalidAttachmentException {
+
+    public Task createTask(TaskDTO taskDto, MultipartFile[] attachments) throws IOException, InvalidAttachmentException {
         Task task = modelMapper.map(taskDto, Task.class);
 
         Long currentUserId = getCurrentUserId();
@@ -61,7 +65,7 @@ public class TaskService {
     }
 
 
-    public Task updateTask(Long taskId, TaskDto taskDto, MultipartFile[] attachments) throws IOException{
+    public Task updateTask(Long taskId, TaskDTO taskDto, MultipartFile[] attachments) throws IOException{
 
         Task updatedTask = modelMapper.map(taskDto, Task.class);
         if (attachments != null && attachments.length > 0) {
@@ -104,7 +108,6 @@ public class TaskService {
     }
 
 
-
     public Long getCurrentUserId() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -141,4 +144,6 @@ public class TaskService {
 
         return false;
     }
+
+
 }

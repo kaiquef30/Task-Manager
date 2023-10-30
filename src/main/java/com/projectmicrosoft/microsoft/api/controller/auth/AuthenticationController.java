@@ -1,10 +1,10 @@
 package com.projectmicrosoft.microsoft.api.controller.auth;
 
 
-import com.projectmicrosoft.microsoft.api.dto.LoginBody;
-import com.projectmicrosoft.microsoft.api.dto.LoginResponse;
-import com.projectmicrosoft.microsoft.api.dto.PasswordResetBody;
-import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
+import com.projectmicrosoft.microsoft.api.DTO.LoginBody;
+import com.projectmicrosoft.microsoft.api.DTO.LoginResponse;
+import com.projectmicrosoft.microsoft.api.DTO.PasswordResetBody;
+import com.projectmicrosoft.microsoft.api.DTO.RegistrationBody;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
 import com.projectmicrosoft.microsoft.exception.InvalidCredentialsException;
@@ -51,7 +51,7 @@ public class AuthenticationController {
 
     @Operation(summary = "Log in")
     @ApiResponse(responseCode = "200", description = "Login successfully.",
-            content = {@Content(schema = @Schema(implementation = LoginBody.class))})
+            content = {@Content(schema = @Schema(implementation = LoginResponse.class))})
     @ApiResponse(responseCode = "403", description = "Unverified email.", content = @Content)
     @ApiResponse(responseCode = "404", description = "unregistered email.", content = @Content)
     @ApiResponse(responseCode = "401", description = "Invalid credentials.", content = @Content)
@@ -67,7 +67,6 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authenticationMessageConfig.getInvalidCredentials());
         }
     }
-
 
 
     @Operation(summary = "Method to verify a user")
@@ -113,4 +112,5 @@ public class AuthenticationController {
         authenticationService.resetPassword(passwordResetBody);
         return ResponseEntity.ok().build();
     }
+
 }

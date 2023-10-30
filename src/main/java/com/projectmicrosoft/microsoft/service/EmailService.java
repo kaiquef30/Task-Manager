@@ -59,4 +59,5 @@ public class EmailService {
             throw new EmailFailureException();
         }
     }
+
 }

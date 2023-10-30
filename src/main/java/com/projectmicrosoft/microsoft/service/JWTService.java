@@ -22,11 +22,11 @@ public class JWTService {
 
     private Algorithm algorithm;
 
-    private static final String EMAIL_KEY = "EMAIL";
+    public static final String EMAIL_KEY = "EMAIL";
 
     private static final String VERIFICATION_EMAIL_KEY = "VERIFICATION_EMAIL";
 
-    private static final String RESET_PASSWORD_EMAIL_KEY = "RESET_PASSWORD_EMAIL";
+    public static final String RESET_PASSWORD_EMAIL_KEY = "RESET_PASSWORD_EMAIL";
 
     private static final long EXPIRATION_DURATION_IN_SECONDS = 1800;
 
@@ -37,7 +37,7 @@ public class JWTService {
         algorithm = Algorithm.HMAC256(algorithmKey);
     }
 
-    private Date calculateExpirationTime(long expirationDurationInSeconds) {
+    public Date calculateExpirationTime(long expirationDurationInSeconds) {
         return Date.from(Instant.now().plusSeconds(expirationDurationInSeconds));
     }
 

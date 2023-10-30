@@ -1,4 +1,4 @@
-package com.projectmicrosoft.microsoft.api.dto;
+package com.projectmicrosoft.microsoft.api.DTO;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotBlank;
@@ -6,9 +6,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-
 @Hidden
 public class PasswordResetBody {
+
+    public PasswordResetBody() {
+    }
 
     @NotNull
     @NotBlank
@@ -19,6 +21,9 @@ public class PasswordResetBody {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")
     @Size(min=6, max=32)
     private String password;
+
+    public PasswordResetBody(String token, String newPassword) {
+    }
 
     public String getToken() {
         return token;

@@ -1,6 +1,7 @@
 package com.projectmicrosoft.microsoft.model;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -11,22 +12,28 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID", example = "1")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
+    @Schema(description = "Name", example = "Team A")
     private String name;
 
     @Column(name = "numbers_of_users")
+    @Schema(description = "Number of Users", example = "5")
     private int numbersOfUsers;
 
     @Column(name = "creator_id")
+    @Schema(description = "Creator ID", example = "1")
     private Long creator;
 
     @ManyToMany
     @JoinTable(name = "team_user",
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @Schema(description = "Users")
     private List<User> users;
+
 
 
     public Long getId() {

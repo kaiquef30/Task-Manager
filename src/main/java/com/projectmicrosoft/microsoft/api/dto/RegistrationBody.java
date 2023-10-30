@@ -1,4 +1,4 @@
-package com.projectmicrosoft.microsoft.api.dto;
+package com.projectmicrosoft.microsoft.api.DTO;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.*;

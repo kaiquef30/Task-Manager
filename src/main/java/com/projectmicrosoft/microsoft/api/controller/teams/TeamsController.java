@@ -1,7 +1,7 @@
 package com.projectmicrosoft.microsoft.api.controller.teams;
 
 
-import com.projectmicrosoft.microsoft.api.dto.TeamsDto;
+import com.projectmicrosoft.microsoft.api.DTO.TeamDTO;
 import com.projectmicrosoft.microsoft.api.security.AuthenticatedUser;
 import com.projectmicrosoft.microsoft.exception.TeamAlreadyExistsException;
 import com.projectmicrosoft.microsoft.exception.TeamNotFoundException;
@@ -45,18 +45,17 @@ public class TeamsController {
     }
 
 
-
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Create new team")
     @ApiResponse(responseCode = "201", description = "Team created successfully",
-            content = {@Content(schema = @Schema(implementation = TeamsDto.class))})
+            content = {@Content(schema = @Schema(implementation = TeamDTO.class))})
     @ApiResponse(responseCode = "409", description = "Team already exists!", content = @Content)
     @PostMapping("/create")
     public ResponseEntity<?> createTeam(@AuthenticationPrincipal User authenticatedUser,
-                                             @Valid @RequestBody TeamsDto teamsDto) {
+                                             @Valid @RequestBody TeamDTO teamDTO) {
         try {
             Team createdTeam;
-            createdTeam = teamService.createTeam(teamsDto);
+            createdTeam = teamService.createTeam(teamDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTeam);
         } catch (TeamAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(teamMessagesConfig.getTeamAlreadyExists());
@@ -79,13 +78,14 @@ public class TeamsController {
         }
     }
 
+
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Edit team")
     @ApiResponse(responseCode = "200", description = "Team information edited successfully.",
-            content = {@Content(schema = @Schema(implementation = TeamsDto.class))})
+            content = {@Content(schema = @Schema(implementation = Team.class))})
     @ApiResponse(responseCode = "404", description = "Team not found!", content = @Content)
     @PutMapping("/{teamId}")
-    public ResponseEntity<?> updateTeam(@PathVariable Long teamId, @RequestBody TeamsDto updatedTeamDto,
+    public ResponseEntity<?> updateTeam(@PathVariable Long teamId, @RequestBody TeamDTO updatedTeamDto,
                            @AuthenticationPrincipal User authenticatedUser) {
         try {
             Team updatedTeam = teamService.updateTeam(teamId, updatedTeamDto);
@@ -94,6 +94,7 @@ public class TeamsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(teamMessagesConfig.getTeamNotFound());
         }
     }
+
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Associate a user with a team")
@@ -114,6 +115,7 @@ public class TeamsController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(teamMessagesConfig.getUserIsAlreadyOnTheTeam());
         }
     }
+
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Remove user from team")

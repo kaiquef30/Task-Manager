@@ -1,7 +1,7 @@
 package com.projectmicrosoft.microsoft.api.controller.task;
 
 
-import com.projectmicrosoft.microsoft.api.dto.TaskDto;
+import com.projectmicrosoft.microsoft.api.DTO.TaskDTO;
 import com.projectmicrosoft.microsoft.api.security.AuthenticatedUser;
 import com.projectmicrosoft.microsoft.exception.InvalidAttachmentException;
 import com.projectmicrosoft.microsoft.exception.TaskNotFoundException;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -36,13 +37,29 @@ public class TaskController {
     }
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
+    @Operation(summary = "Display all tasks")
+    @GetMapping
+    public ResponseEntity<List<Task>> getAllTasks() {
+        List<Task> allTasks = taskService.getAllTasks();
+        return ResponseEntity.ok(allTasks);
+    }
+
+    @AuthenticatedUser(requiredRoles = {"ADMIN"})
+    @Operation(summary = "View all tasks for a given user")
+    @GetMapping("/user-tasks")
+    public ResponseEntity<List<Task>> getAllTasksForCurrentUser(@RequestParam Long userId) {
+            List<Task> allTasksForCurrentUser = taskService.getAllTasksForCurrentUser();
+            return ResponseEntity.ok(allTasksForCurrentUser);
+    }
+
+    @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Create task")
     @ApiResponse(responseCode = "201", description = "Task created successfully.",
-            content = {@Content(schema = @Schema(implementation = TaskDto.class))})
+            content = {@Content(schema = @Schema(implementation = TaskDTO.class))})
     @ApiResponse(responseCode = "500", description = "Error processing attachments.", content = @Content)
     @ApiResponse(responseCode = "400", description = "Invalid file type or size.", content = @Content)
     @PostMapping("/create")
-    public ResponseEntity<?> createTask(@RequestBody TaskDto taskDto,
+    public ResponseEntity<?> createTask(@RequestBody TaskDTO taskDto,
                                         @RequestParam(value = "attachments", required = false)
                                         MultipartFile[] attachments) {
         try {
@@ -59,10 +76,10 @@ public class TaskController {
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Edit a task")
     @ApiResponse(responseCode = "200", description = "Task edited successfully.",
-            content = {@Content(schema = @Schema(implementation = TaskDto.class))})
+            content = {@Content(schema = @Schema(implementation = TaskDTO.class))})
     @ApiResponse(responseCode = "500", description = "Error processing attachments.", content = @Content)
     @PutMapping("/update/{taskId}")
-    public ResponseEntity<?> updateTask(@PathVariable Long taskId, @RequestBody TaskDto taskDto,
+    public ResponseEntity<?> updateTask(@PathVariable Long taskId, @RequestBody TaskDTO taskDto,
                                         @RequestParam(value = "attachments", required = false)
                                         MultipartFile[] attachments) {
         try {
@@ -103,4 +120,5 @@ public class TaskController {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

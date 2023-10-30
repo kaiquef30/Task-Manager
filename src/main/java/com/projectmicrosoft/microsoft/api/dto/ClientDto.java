@@ -1,4 +1,4 @@
-package com.projectmicrosoft.microsoft.api.dto;
+package com.projectmicrosoft.microsoft.api.DTO;
 
 import com.projectmicrosoft.microsoft.model.Address;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Hidden
-public class ClientDto {
+public class ClientDTO {
 
     @Email
     @NotBlank

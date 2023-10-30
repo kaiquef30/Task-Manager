@@ -1,7 +1,7 @@
 package com.projectmicrosoft.microsoft.service;
 
 
-import com.projectmicrosoft.microsoft.api.dto.ClientDto;
+import com.projectmicrosoft.microsoft.api.DTO.ClientDTO;
 import com.projectmicrosoft.microsoft.exception.ClientNotFoundException;
 import com.projectmicrosoft.microsoft.model.Client;
 import com.projectmicrosoft.microsoft.repository.ClientRepository;
@@ -26,7 +26,7 @@ public class ClientService {
 
 
     @Transactional
-    public Client registerClient(ClientDto clientDto) {
+    public Client registerClient(ClientDTO clientDto) {
         Client client = modelMapper.map(clientDto, Client.class);
         return clientRepository.save(client);
     }
@@ -42,7 +42,7 @@ public class ClientService {
     }
 
     @Transactional
-    public Client updateClient(Long clientId, ClientDto clientDto) throws ClientNotFoundException {
+    public Client updateClient(Long clientId, ClientDTO clientDto) throws ClientNotFoundException {
         Optional<Client> existingClientOptional = clientRepository.findById(clientId);
 
         if (existingClientOptional.isPresent()) {
@@ -62,4 +62,5 @@ public class ClientService {
             throw new ClientNotFoundException();
         }
     }
+
 }

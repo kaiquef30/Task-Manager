@@ -1,6 +1,6 @@
 package com.projectmicrosoft.microsoft.api.controller.client;
 
-import com.projectmicrosoft.microsoft.api.dto.ClientDto;
+import com.projectmicrosoft.microsoft.api.DTO.ClientDTO;
 import com.projectmicrosoft.microsoft.api.security.AuthenticatedUser;
 import com.projectmicrosoft.microsoft.exception.ClientNotFoundException;
 import com.projectmicrosoft.microsoft.exception.messages.ClientMessageConfig;
@@ -43,10 +43,10 @@ public class ClientController {
     @AuthenticatedUser(requiredRoles = {"ADMIN", "USER"})
     @Operation(summary = "Register a new customer")
     @ApiResponse(responseCode = "201", description = "Successfully registered client!",
-            content = {@Content(schema = @Schema(implementation = ClientDto.class))})
+            content = {@Content(schema = @Schema(implementation = Client.class))})
     @ApiResponse(responseCode = "409", description = "Client already exists!", content = @Content)
     @PostMapping("/create")
-    public ResponseEntity<?> registerClient(@RequestBody @Valid ClientDto clientDto, @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> registerClient(@RequestBody @Valid ClientDTO clientDto, @AuthenticationPrincipal User user) {
         Client clientRegistered = clientService.registerClient(clientDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(clientRegistered);
     }
@@ -80,11 +80,11 @@ public class ClientController {
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Update customer")
     @ApiResponse(responseCode = "200", description = "Customer successfully updated.", content =
-            {@Content(schema = @Schema(implementation = ClientDto.class))})
+            {@Content(schema = @Schema(implementation = Client.class))})
     @ApiResponse(responseCode = "404", description = "Customer not found.", content = @Content)
     @ApiResponse(responseCode = "403", description = "You are not allowed to update this customer.", content = @Content)
     @PutMapping("/{clientId}")
-    public ResponseEntity<?> updateClient(@PathVariable Long clientId, @RequestBody ClientDto clientDto) {
+    public ResponseEntity<?> updateClient(@PathVariable Long clientId, @RequestBody ClientDTO clientDto) {
         try {
             Client clientUpdated = clientService.updateClient(clientId, clientDto);
             return ResponseEntity.status(HttpStatus.OK).body(clientUpdated);
@@ -92,4 +92,5 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(clientMessageConfig.getClientNotFound());
         }
     }
+
 }

@@ -1,10 +1,10 @@
 package com.projectmicrosoft.microsoft.service;
 
 
-import com.projectmicrosoft.microsoft.api.dto.LoginBody;
-import com.projectmicrosoft.microsoft.api.dto.LoginResponse;
-import com.projectmicrosoft.microsoft.api.dto.PasswordResetBody;
-import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
+import com.projectmicrosoft.microsoft.api.DTO.LoginBody;
+import com.projectmicrosoft.microsoft.api.DTO.LoginResponse;
+import com.projectmicrosoft.microsoft.api.DTO.PasswordResetBody;
+import com.projectmicrosoft.microsoft.api.DTO.RegistrationBody;
 import com.projectmicrosoft.microsoft.enums.UserRoles;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
@@ -52,7 +52,7 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    public LoginResponse loginUser(LoginBody loginBody) throws EmailFailureException, InvalidCredentialsException {
+    public LoginResponse loginUser(LoginBody loginBody) throws EmailFailureException {
         User user = findUserByEmail(loginBody.getEmail());
         validatePassword(loginBody.getPassword(), user);
 
@@ -121,7 +121,7 @@ public class AuthenticationService {
         return verificationToken;
     }
 
-    public User findUserByEmail(String email) throws InvalidCredentialsException {
+    public User findUserByEmail(String email) {
         Optional<User> opUser = userRepository.findByEmailIgnoreCase(email);
         if (opUser.isPresent()) {
             return opUser.get();
@@ -130,9 +130,10 @@ public class AuthenticationService {
         }
     }
 
-    public void validatePassword(String inputPassword, User user) throws InvalidCredentialsException {
+    public void validatePassword(String inputPassword, User user) {
         if (!encryptionService.verifyPassword(inputPassword, user.getPassword())) {
             throw new InvalidCredentialsException();
         }
     }
+
 }

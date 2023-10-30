@@ -1,4 +1,4 @@
-package com.projectmicrosoft.microsoft.api.dto;
+package com.projectmicrosoft.microsoft.api.DTO;
 
 import com.projectmicrosoft.microsoft.enums.TaskStatus;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.List;
 
 @Hidden
-public class TaskDto {
+public class TaskDTO {
 
-    public TaskDto() {
+    public TaskDTO() {
         this.status = TaskStatus.PENDING;
     }
 

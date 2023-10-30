@@ -1,6 +1,6 @@
 package com.projectmicrosoft.microsoft.service;
 
-import com.projectmicrosoft.microsoft.api.dto.TeamsDto;
+import com.projectmicrosoft.microsoft.api.DTO.TeamDTO;
 import com.projectmicrosoft.microsoft.exception.TeamAlreadyExistsException;
 import com.projectmicrosoft.microsoft.exception.TeamNotFoundException;
 import com.projectmicrosoft.microsoft.exception.UserIsAlreadyOnTheTeam;
@@ -47,16 +47,16 @@ public class TeamService {
 
 
     @Transactional
-    public Team createTeam(TeamsDto teamsDto) throws TeamAlreadyExistsException {
-        getTeamNameOrThrow(teamsDto.getName());
-        Team team = modelMapper.map(teamsDto, Team.class);
+    public Team createTeam(TeamDTO teamDTO) throws TeamAlreadyExistsException {
+        getTeamNameOrThrow(teamDTO.getName());
+        Team team = modelMapper.map(teamDTO, Team.class);
         Long currentUserId = getCurrentUserId();
         team.setCreator(currentUserId);
         return teamRepository.save(team);
     }
 
     @Transactional
-    public Team updateTeam(Long teamId, TeamsDto updatedTeamDto) throws TeamNotFoundException {
+    public Team updateTeam(Long teamId, TeamDTO updatedTeamDto) throws TeamNotFoundException {
         Optional<Team> existingTeamOptional = teamRepository.findById(teamId);
         if (existingTeamOptional.isPresent()) {
             Team existingTeam = existingTeamOptional.get();

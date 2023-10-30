@@ -1,7 +1,6 @@
-package com.projectmicrosoft.microsoft.api.dto;
+package com.projectmicrosoft.microsoft.api.DTO;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import org.springframework.http.HttpStatus;
 
 @Hidden
 public class LoginResponse {
@@ -13,11 +12,6 @@ public class LoginResponse {
     public LoginResponse(boolean success, String jwt) {
         this.success = success;
         this.jwt = jwt;
-    }
-
-    public LoginResponse(boolean success, HttpStatus httpStatus, String failureReason) {
-        this.success = success;
-        this.failureReason = failureReason;
     }
 
 
