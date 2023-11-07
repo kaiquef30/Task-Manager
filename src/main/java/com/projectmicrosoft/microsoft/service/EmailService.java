@@ -5,12 +5,15 @@ import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.model.VerificationToken;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
+@CacheConfig(cacheNames = "emailCache")
 public class EmailService {
 
     @Value("${email.from}")
@@ -32,6 +35,7 @@ public class EmailService {
     }
 
 
+    @Cacheable(key = "'verificationEmail_' + #verificationToken.token", unless = "#result == null")
     public void sendVerificationEmail(VerificationToken verificationToken) throws EmailFailureException {
         SimpleMailMessage message = makeMailMessage();
         message.setTo(verificationToken.getUser().getEmail());
@@ -46,6 +50,7 @@ public class EmailService {
         }
     }
 
+    @Cacheable(key = "'resetPasswordEmail_' + #user.id", unless = "#result == null")
     public void sendResetPasswordEmail(User user, String token) throws EmailFailureException{
         SimpleMailMessage message = makeMailMessage();
         message.setTo(user.getEmail());
