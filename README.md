@@ -1,130 +1,129 @@
-# API de Autenticação e Gerenciamento
+# Authentication and Management API
 
-Esta é uma API de autenticação e gerenciamento de usuários, clientes, tarefas e equipes. Ela fornece funcionalidades para registrar usuários, fazer login, gerenciar clientes, criar e gerenciar tarefas, bem como criar e gerenciar equipes.
+🔐 Welcome to our Authentication and Management API, where we provide essential features for user registration, login, client management, task creation, and team management.
 
-## Endpoints da API
+## API Endpoints
 
-### Autenticação
+### Authentication
 
-- **Registrar um novo usuário**
-  - `POST /api/auth/register`
-  - Registra um novo usuário na plataforma.
+- **Register a New User**
+  - 📝 `POST /api/auth/register`
+  - Register a new user on the platform.
 
 - **Login**
-  - `POST /api/auth/login`
-  - Permite que os usuários façam login na plataforma.
+  - 🔑 `POST /api/auth/login`
+  - Allows users to log in to the platform.
 
-- **Verificar e-mail**
-  - `POST /api/auth/verify`
-  - Permite verificar o e-mail do usuário.
+- **Verify Email**
+  - 📧 `POST /api/auth/verify`
+  - Verify the user's email.
 
-- **Obter informações do usuário logado**
-  - `GET /api/auth/me`
-  - Recupera informações do usuário logado.
+- **Get Information of the Logged-in User**
+  - 🧑‍💻 `GET /api/auth/me`
+  - Retrieve information about the currently logged-in user.
 
-### Clientes
+### Clients
 
-- **Obter todos os clientes**
-  - `GET /api/clients`
-  - Retorna a lista de todos os clientes.
+- **Get All Clients**
+  - 📋 `GET /api/clients`
+  - Returns a list of all clients.
 
-- **Registrar um novo cliente**
-  - `POST /api/clients/create`
-  - Registra um novo cliente na plataforma.
+- **Register a New Client**
+  - 📝 `POST /api/clients/create`
+  - Register a new client on the platform.
 
-- **Buscar cliente por ID**
-  - `GET /api/clients/{clientId}`
-  - Retorna as informações de um cliente específico com base no ID.
+- **Retrieve Client by ID**
+  - 📌 `GET /api/clients/{clientId}`
+  - Retrieve information about a specific client based on the ID.
 
-- **Deletar cliente**
-  - `DELETE /api/clients/{clientId}`
-  - Deleta um cliente com base no ID.
+- **Delete Client**
+  - 🗑️ `DELETE /api/clients/{clientId}`
+  - Delete a client based on the ID.
 
-- **Atualizar cliente**
-  - `PUT /api/clients/{clientId}`
-  - Atualiza as informações de um cliente com base no ID.
+- **Update Client**
+  - 🔄 `PUT /api/clients/{clientId}`
+  - Update information about a client based on the ID.
 
-### Tarefas
+### Tasks
 
-- **Obter todas as tarefas**
-  - `GET /api/tasks`
-  - Retorna a lista de todas as tarefas.
+- **Get All Tasks**
+  - 📋 `GET /api/tasks`
+  - Returns a list of all tasks.
 
-- **Obter todas as tarefas de um usuário**
-  - `GET /api/tasks/user-tasks`
-  - Retorna a lista de todas as tarefas de um usuário específico.
+- **Get All User's Tasks**
+  - 🧑‍💼 `GET /api/tasks/user-tasks`
+  - Returns a list of all tasks for a specific user.
 
-- **Criar uma nova tarefa**
-  - `POST /api/tasks/create`
-  - Cria uma nova tarefa na plataforma.
+- **Create a New Task**
+  - ➕ `POST /api/tasks/create`
+  - Create a new task on the platform.
 
-- **Editar uma tarefa**
-  - `PUT /api/tasks/update/{taskId}`
-  - Edita as informações de uma tarefa com base no ID.
+- **Edit a Task**
+  - ✏️ `PUT /api/tasks/update/{taskId}`
+  - Edit information about a task based on the ID.
 
-- **Buscar tarefa por ID**
-  - `GET /api/tasks/search/{taskId}`
-  - Retorna as informações de uma tarefa específica com base no ID.
+- **Retrieve Task by ID**
+  - 📌 `GET /api/tasks/search/{taskId}`
+  - Retrieve information about a specific task based on the ID.
 
-- **Deletar tarefa**
-  - `DELETE /api/tasks/{taskId}`
-  - Deleta uma tarefa com base no ID.
+- **Delete Task**
+  - 🗑️ `DELETE /api/tasks/{taskId}`
+  - Delete a task based on the ID.
 
-### Equipes
+### Teams
 
-- **Obter todas as equipes**
-  - `GET /api/teams`
-  - Retorna a lista de todas as equipes.
+- **Get All Teams**
+  - 🏢 `GET /api/teams`
+  - Returns a list of all teams.
 
-- **Criar uma nova equipe**
-  - `POST /api/teams/create`
-  - Cria uma nova equipe na plataforma.
+- **Create a New Team**
+  - ➕ `POST /api/teams/create`
+  - Create a new team on the platform.
 
-- **Deletar equipe**
-  - `DELETE /api/teams/{teamId}`
-  - Deleta uma equipe com base no ID.
+- **Delete Team**
+  - 🗑️ `DELETE /api/teams/{teamId}`
+  - Delete a team based on the ID.
 
-- **Editar equipe**
-  - `PUT /api/teams/{teamId}`
-  - Edita as informações de uma equipe com base no ID.
+- **Edit Team**
+  - 🔄 `PUT /api/teams/{teamId}`
+  - Update information about a team based on the ID.
 
-- **Adicionar usuário a uma equipe**
-  - `POST /api/teams/{teamId}/addUser/{userId}`
-  - Adiciona um usuário a uma equipe.
+- **Add User to Team**
+  - ➕ `POST /api/teams/{teamId}/addUser/{userId}`
+  - Add a user to a team.
 
-- **Remover usuário de uma equipe**
-  - `DELETE /api/teams/{teamId}/removeUser/{userId}`
-  - Remove um usuário de uma equipe.
+- **Remove User from Team**
+  - 🚫 `DELETE /api/teams/{teamId}/removeUser/{userId}`
+  - Remove a user from a team.
 
+## Technologies Used
 
+Our Authentication and Management API has been developed using the following technologies:
 
-## Tecnologias Utilizadas
+- ☕ **Java**: The primary programming language used for building the application.
 
-A API de Autenticação e Gerenciamento foi desenvolvida com a utilização das seguintes tecnologias:
+- 🚀 **Spring Boot**: A framework that simplifies the development of Spring-based Java applications.
 
-- **Java**: A linguagem de programação principal utilizada para desenvolver a aplicação.
+- ✅ **Spring Validation**: Used to validate input data, ensuring data integrity.
 
-- **Spring Boot**: Framework que facilita o desenvolvimento de aplicativos Java baseados em Spring.
+- 🐘 **PostgreSQL**: A relational database management system used to store user, client, task, and team information.
 
-- **Spring Validation**: Utilizado para validar as entradas de dados, garantindo a integridade dos dados do usuário.
+- 🧰 **Maven**: An automation and dependency management tool used to manage project libraries.
 
-- **PostgreSQL**: Sistema de gerenciamento de banco de dados relacional utilizado para armazenar informações de usuários, clientes, tarefas e equipes.
+- 🔒 **Spring Security**: Used to implement security features like authentication and authorization.
 
-- **Maven**: Ferramenta de automação de compilação e gerenciamento de dependências, utilizada para gerenciar as bibliotecas do projeto.
+- 🛠️ **Hibernate**: An Object-Relational Mapping (ORM) framework that simplifies database interactions.
 
-- **Spring Security**: Utilizado para implementar recursos de segurança, como autenticação e autorização.
+- 📚 **Swagger**: A framework for API documentation, making it easy for developers to understand and test API endpoints.
 
-- **Hibernate**: Framework de mapeamento objeto-relacional (ORM) utilizado para facilitar a interação com o banco de dados.
+- 📊 **Spring Data**: Simplifies database interactions by providing simplified CRUD operations.
 
-- **Swagger**: Framework para documentação de API, permitindo que os desenvolvedores entendam e testem os endpoints da API de forma eficiente.
+- ✅ **JUnit**: A unit testing framework used to automate testing of application functionality.
 
-- **Spring Data**: Facilita a interação com o banco de dados, fornecendo métodos simplificados para realizar operações de CRUD.
+- 🃏 **Mockito**: A testing framework that enables the creation and configuration of mock objects for unit tests.
 
-- **JUnit**: Framework de testes unitários para testar a funcionalidade da aplicação de forma automatizada.
+- 🌐 **JWT (JSON Web Tokens)**: Used for secure authentication and access token generation.
 
-- **Mockito**: Framework de teste que permite criar e configurar objetos "falsos" para testes de unidades.
+- 🔄 **Redis**: A high-performance, in-memory data store used for caching and session management.
 
-- **JWT (JSON Web Tokens)**: Utilizado para autenticação e geração de tokens de acesso, proporcionando um método seguro de autenticação para a API.
-
-Estas tecnologias foram escolhidas para criar uma API robusta, segura e de alto desempenho para atender às necessidades de autenticação, gerenciamento de clientes, tarefas e equipes.
-
+These technologies were chosen to create a robust, secure, and high-performance API that meets the needs of user authentication, client and task management, and team collaboration.
