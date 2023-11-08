@@ -6,12 +6,15 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.projectmicrosoft.microsoft.model.User;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
 
 @Service
+@CacheConfig(cacheNames = "jwtCache")
 public class JWTService {
 
     @Value("${jwt.algorithm.key}")
@@ -41,6 +44,7 @@ public class JWTService {
         return Date.from(Instant.now().plusSeconds(expirationDurationInSeconds));
     }
 
+    @Cacheable(value = "jwtCache", key = "#user.email", unless = "#result == null")
     public String generateJWT(User user) {
         return JWT.create()
                 .withClaim(EMAIL_KEY, user.getEmail())
