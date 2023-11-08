@@ -7,6 +7,8 @@ import com.projectmicrosoft.microsoft.model.Task;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.repository.TaskRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -29,11 +31,13 @@ public class TaskService {
         this.modelMapper = modelMapper;
     }
 
+
+    @Cacheable(value = "taskCache", key = "'allTasks'")
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
 
-
+    @CacheEvict(value = "taskCache", key = "'allTasks'", allEntries = true)
     public Task createTask(TaskDTO taskDto, MultipartFile[] attachments) throws IOException, InvalidAttachmentException {
         Task task = modelMapper.map(taskDto, Task.class);
 
@@ -64,9 +68,8 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-
-    public Task updateTask(Long taskId, TaskDTO taskDto, MultipartFile[] attachments) throws IOException{
-
+    @CacheEvict(value = "taskCache", key = "'allTasks'", allEntries = true)
+    public Task updateTask(Long taskId, TaskDTO taskDto, MultipartFile[] attachments) throws IOException {
         Task updatedTask = modelMapper.map(taskDto, Task.class);
         if (attachments != null && attachments.length > 0) {
             List<String> attachmentBase64List = new ArrayList<>();
@@ -85,23 +88,22 @@ public class TaskService {
         return taskRepository.save(updatedTask);
     }
 
-
+    @Cacheable(value = "taskCache", key = "#taskId")
     public Task getTaskById(Long taskId) throws TaskNotFoundException {
         return taskRepository.findById(taskId)
                 .orElseThrow(TaskNotFoundException::new);
     }
 
-
+    @CacheEvict(value = "taskCache", key = "#taskId")
     public void deleteTask(Long taskId) throws TaskNotFoundException {
         if (taskRepository.existsById(taskId)) {
             taskRepository.deleteById(taskId);
         } else {
             throw new TaskNotFoundException();
         }
-
     }
 
-
+    @Cacheable(value = "taskCache", key = "'tasksForCurrentUser'")
     public List<Task> getAllTasksForCurrentUser() {
         Long currentUserId = getCurrentUserId();
         return taskRepository.findAllByAssigneeId(currentUserId);
@@ -144,6 +146,4 @@ public class TaskService {
 
         return false;
     }
-
-
 }
