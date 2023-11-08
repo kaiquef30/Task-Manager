@@ -11,6 +11,8 @@ import com.projectmicrosoft.microsoft.repository.TeamRepository;
 import com.projectmicrosoft.microsoft.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -34,10 +36,12 @@ public class TeamService {
     }
 
 
+    @Cacheable(value = "teamCache", key = "T(org.springframework.util.ClassUtils).getShortName('Team')") // Cache all teams
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
     }
 
+    @Cacheable(value = "teamCache", key = "#teamId") // Cache team by ID
     public Optional<Team> getTeamById(Long teamId) {
         if (teamRepository.existsById(teamId)) {
             return teamRepository.findById(teamId);
@@ -45,8 +49,8 @@ public class TeamService {
         throw new TeamNotFoundException();
     }
 
-
     @Transactional
+    @CacheEvict(value = "teamCache", allEntries = true) // Clear cache when a new team is created
     public Team createTeam(TeamDTO teamDTO) throws TeamAlreadyExistsException {
         getTeamNameOrThrow(teamDTO.getName());
         Team team = modelMapper.map(teamDTO, Team.class);
@@ -56,6 +60,7 @@ public class TeamService {
     }
 
     @Transactional
+    @CacheEvict(value = "teamCache", key = "#teamId") // Clear cache when a team is updated
     public Team updateTeam(Long teamId, TeamDTO updatedTeamDto) throws TeamNotFoundException {
         Optional<Team> existingTeamOptional = teamRepository.findById(teamId);
         if (existingTeamOptional.isPresent()) {
@@ -66,8 +71,8 @@ public class TeamService {
         throw new TeamNotFoundException();
     }
 
-
     @Transactional
+    @CacheEvict(value = "teamCache", key = "#teamId") // Clear cache when a team is deleted
     public void deleteTeam(Long teamId) throws TeamNotFoundException {
         if (teamRepository.existsById(teamId)) {
             teamRepository.deleteById(teamId);
@@ -75,7 +80,6 @@ public class TeamService {
             throw new TeamNotFoundException();
         }
     }
-
 
     @Transactional
     public void addUserToTeam(Long teamId, Long userId) throws TeamNotFoundException, UserNotFoundException, UserIsAlreadyOnTheTeam {
@@ -90,7 +94,6 @@ public class TeamService {
             throw new UserIsAlreadyOnTheTeam();
         }
     }
-
 
     @Transactional
     public void removeUserFromTeam(Long teamId, Long userId) throws TeamNotFoundException, UserNotFoundException {
