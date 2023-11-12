@@ -125,5 +125,7 @@ Our Authentication and Management API has been developed using the following tec
 - 🌐 **JWT (JSON Web Tokens)**: Used for secure authentication and access token generation.
 
 - 🔄 **Redis**: A high-performance, in-memory data store used for caching and session management.
+  
+- ⚙️ **AspectJ**: Utilized for aspect-oriented programming (AOP) to modularize cross-cutting concerns such as logging, security, and transaction management in a clean and efficient manner.
 
 These technologies were chosen to create a robust, secure, and high-performance API that meets the needs of user authentication, client and task management, and team collaboration.
