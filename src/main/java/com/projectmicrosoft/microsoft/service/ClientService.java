@@ -1,11 +1,12 @@
 package com.projectmicrosoft.microsoft.service;
 
 
-import com.projectmicrosoft.microsoft.api.DTO.ClientDTO;
+import com.projectmicrosoft.microsoft.api.dto.ClientDTO;
 import com.projectmicrosoft.microsoft.exception.ClientNotFoundException;
 import com.projectmicrosoft.microsoft.model.Client;
 import com.projectmicrosoft.microsoft.repository.ClientRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,17 +15,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class ClientService {
 
     private final ClientRepository clientRepository;
+
     private final ModelMapper modelMapper;
-
-
-    public ClientService(ClientRepository clientRepository, ModelMapper modelMapper) {
-        this.clientRepository = clientRepository;
-        this.modelMapper = modelMapper;
-    }
 
 
     @Transactional

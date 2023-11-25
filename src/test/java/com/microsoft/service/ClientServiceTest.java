@@ -1,6 +1,6 @@
 package com.microsoft.service;
 
-import com.projectmicrosoft.microsoft.api.DTO.ClientDTO;
+import com.projectmicrosoft.microsoft.api.dto.ClientDTO;
 import com.projectmicrosoft.microsoft.exception.ClientNotFoundException;
 import com.projectmicrosoft.microsoft.model.Client;
 import com.projectmicrosoft.microsoft.repository.ClientRepository;

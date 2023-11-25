@@ -1,9 +1,9 @@
 package com.microsoft.service;
 
-import com.projectmicrosoft.microsoft.api.DTO.LoginBody;
 import com.projectmicrosoft.microsoft.api.DTO.LoginResponse;
-import com.projectmicrosoft.microsoft.api.DTO.PasswordResetBody;
-import com.projectmicrosoft.microsoft.api.DTO.RegistrationBody;
+import com.projectmicrosoft.microsoft.api.dto.LoginBody;
+import com.projectmicrosoft.microsoft.api.dto.PasswordResetBody;
+import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
 import com.projectmicrosoft.microsoft.exception.InvalidCredentialsException;
@@ -35,7 +35,7 @@ public class AuthenticationServiceTest {
     @Mock
     private EncryptionService encryptionService;
     @Mock
-    VerificationToken verificationToken;
+    private VerificationToken verificationToken;
 
     @Mock
     private EmailService emailService;
@@ -49,12 +49,14 @@ public class AuthenticationServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
+    @Mock
     private AuthenticationService authenticationService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        authenticationService = new AuthenticationService(userRepository, encryptionService, emailService, tokenRepository, jwtService, modelMapper);
+        authenticationService = new AuthenticationService(userRepository, encryptionService, emailService,
+                tokenRepository, jwtService, modelMapper);
     }
 
     @Test
@@ -187,7 +189,7 @@ public class AuthenticationServiceTest {
         String email = "test@example.com";
         String newPassword = "newPassword123";
 
-        PasswordResetBody resetBody = new PasswordResetBody();
+        var resetBody = new PasswordResetBody();
         resetBody.setToken(token);
         resetBody.setPassword(newPassword);
 

@@ -1,5 +1,5 @@
 package com.projectmicrosoft.microsoft.exception;
 
-public class UserNotFoundException extends Exception{
+public class UserNotFoundException extends RuntimeException {
 
 }

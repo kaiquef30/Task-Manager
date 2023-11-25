@@ -1,7 +1,7 @@
 package com.projectmicrosoft.microsoft.api.controller.task;
 
 
-import com.projectmicrosoft.microsoft.api.DTO.TaskDTO;
+import com.projectmicrosoft.microsoft.api.dto.TaskDTO;
 import com.projectmicrosoft.microsoft.api.security.AuthenticatedUser;
 import com.projectmicrosoft.microsoft.exception.InvalidAttachmentException;
 import com.projectmicrosoft.microsoft.exception.TaskNotFoundException;
@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,20 +22,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/task")
 public class TaskController {
 
     private final TaskService taskService;
+
     private final ClientMessageConfig clientMessageConfig;
+
     private final TaskMessageConfig taskMessageConfig;
 
-    public TaskController(TaskService taskService, ClientMessageConfig clientMessageConfig,
-                          TaskMessageConfig taskMessageConfig) {
-        this.taskService = taskService;
-        this.clientMessageConfig = clientMessageConfig;
-        this.taskMessageConfig = taskMessageConfig;
-    }
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Display all tasks")

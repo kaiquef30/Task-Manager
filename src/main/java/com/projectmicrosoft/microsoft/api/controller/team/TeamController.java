@@ -1,7 +1,7 @@
-package com.projectmicrosoft.microsoft.api.controller.teams;
+package com.projectmicrosoft.microsoft.api.controller.team;
 
 
-import com.projectmicrosoft.microsoft.api.DTO.TeamDTO;
+import com.projectmicrosoft.microsoft.api.dto.TeamDTO;
 import com.projectmicrosoft.microsoft.api.security.AuthenticatedUser;
 import com.projectmicrosoft.microsoft.exception.TeamAlreadyExistsException;
 import com.projectmicrosoft.microsoft.exception.TeamNotFoundException;
@@ -16,23 +16,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/teams")
-public class TeamsController {
+@RequestMapping("/api/team")
+public class TeamController {
 
     private final TeamService teamService;
 
     private final TeamMessagesConfig teamMessagesConfig;
-
-    public TeamsController(TeamService teamService, TeamMessagesConfig teamMessagesConfig) {
-        this.teamService = teamService;
-        this.teamMessagesConfig = teamMessagesConfig;
-    }
 
 
     @AuthenticatedUser(requiredRoles = {"USER"})

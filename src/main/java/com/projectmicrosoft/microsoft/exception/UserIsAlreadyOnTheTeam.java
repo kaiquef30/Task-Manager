@@ -1,4 +1,4 @@
 package com.projectmicrosoft.microsoft.exception;
 
-public class UserIsAlreadyOnTheTeam extends Exception{
+public class UserIsAlreadyOnTheTeam extends RuntimeException {
 }

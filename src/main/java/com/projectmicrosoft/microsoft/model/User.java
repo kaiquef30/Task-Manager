@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.projectmicrosoft.microsoft.enums.UserRoles;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+
+@Getter
+@Setter
 @Entity
 @Table(name = "local_user")
 public class User implements UserDetails {
@@ -65,16 +70,8 @@ public class User implements UserDetails {
     @Schema(description = "Date of user registration", example = "2023-10-19")
     private Date registrationDate;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
+    public Boolean isEmailVerified() {
+        return emailVerified;
     }
 
     @PrePersist
@@ -119,74 +116,6 @@ public class User implements UserDetails {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toString()));
         }
         return authorities;
-    }
-
-    public List<UserRoles> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<UserRoles> roles) {
-        this.roles = roles;
-    }
-
-    public Date getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public List<VerificationToken> getVerificationTokens() {
-        return verificationTokens;
-    }
-
-    public void setVerificationTokens(List<VerificationToken> verificationTokens) {
-        this.verificationTokens = verificationTokens;
-    }
-
-    public Boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public Boolean getEmailVerified() {
-        return emailVerified;
-    }
-
-    public void setEmailVerified(Boolean emailVerified) {
-        this.emailVerified = emailVerified;
     }
 
 }

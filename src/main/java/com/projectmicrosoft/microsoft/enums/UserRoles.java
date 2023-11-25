@@ -1,5 +1,10 @@
 package com.projectmicrosoft.microsoft.enums;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
 public enum UserRoles {
 
     ADMIN("ADMIN"),
@@ -11,12 +16,5 @@ public enum UserRoles {
 
     private final String roles;
 
-    UserRoles(String role) {
-        this.roles = role;
-    }
-
-    public String getRole() {
-        return roles;
-    }
 }
 

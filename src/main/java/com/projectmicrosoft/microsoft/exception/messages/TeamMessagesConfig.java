@@ -1,9 +1,13 @@
 package com.projectmicrosoft.microsoft.exception.messages;
 
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+@Getter
+@Setter
 @Configuration
 @ConfigurationProperties(prefix = "team.message")
 public class TeamMessagesConfig {
@@ -24,72 +28,4 @@ public class TeamMessagesConfig {
 
     private String userRemovedSuccessfully;
 
-    public String getUserRemovedSuccessfully() {
-        return userRemovedSuccessfully;
-    }
-
-    public void setuserRemovedSuccessfully(String userRemovedSuccessfully) {
-        this.userRemovedSuccessfully = userRemovedSuccessfully;
-    }
-
-    public String getUserAddedSuccessfully() {
-        return userAddedSuccessfully;
-    }
-
-    public void setUserAddedSuccessfully(String userAddedSuccessfully) {
-        this.userAddedSuccessfully = userAddedSuccessfully;
-    }
-
-    public String getUserIsAlreadyOnTheTeam() {
-        return userIsAlreadyOnTheTeam;
-    }
-
-    public void setUserIsAlreadyOnTheTeam(String userIsAlreadyOnTheTeam) {
-        this.userIsAlreadyOnTheTeam = userIsAlreadyOnTheTeam;
-    }
-
-    public String getTeamDeletedSucessfully() {
-        return teamDeletedSucessfully;
-    }
-
-    public void setTeamDeletedSucessfully(String teamDeletedSucessfully) {
-        this.teamDeletedSucessfully = teamDeletedSucessfully;
-    }
-
-
-    public String getUserSuccessfullyAssociateWithTeam() {
-        return userSuccessfullyAssociateWithTeam;
-    }
-
-
-    public String getUserNotFound() {
-        return userNotFound;
-    }
-
-
-    public String getTeamNotFound() {
-        return teamNotFound;
-    }
-
-
-
-    public String getTeamAlreadyExists() {
-        return teamAlreadyExists;
-    }
-
-    public void setUserSuccessfullyAssociateWithTeam(String userSuccessfullyAssociateWithTeam) {
-        this.userSuccessfullyAssociateWithTeam = userSuccessfullyAssociateWithTeam;
-    }
-
-    public void setUserNotFound(String userNotFound) {
-        this.userNotFound = userNotFound;
-    }
-
-    public void setTeamNotFound(String teamNotFound) {
-        this.teamNotFound = teamNotFound;
-    }
-
-    public void setTeamAlreadyExists(String teamAlreadyExists) {
-        this.teamAlreadyExists = teamAlreadyExists;
-    }
 }

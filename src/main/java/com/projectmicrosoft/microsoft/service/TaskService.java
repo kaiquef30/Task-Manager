@@ -1,11 +1,12 @@
 package com.projectmicrosoft.microsoft.service;
 
-import com.projectmicrosoft.microsoft.api.DTO.TaskDTO;
+import com.projectmicrosoft.microsoft.api.dto.TaskDTO;
 import com.projectmicrosoft.microsoft.exception.InvalidAttachmentException;
 import com.projectmicrosoft.microsoft.exception.TaskNotFoundException;
 import com.projectmicrosoft.microsoft.model.Task;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.repository.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,16 +21,12 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class TaskService {
 
     private final TaskRepository taskRepository;
     private final ModelMapper modelMapper;
-
-    public TaskService(TaskRepository taskRepository, ModelMapper modelMapper) {
-        this.taskRepository = taskRepository;
-        this.modelMapper = modelMapper;
-    }
 
 
     @Cacheable(value = "taskCache", key = "'allTasks'")
@@ -141,7 +138,8 @@ public class TaskService {
         String contentType = attachment.getContentType();
 
         if (contentType != null) {
-            return contentType.startsWith("image/") || contentType.equals("application/pdf") || contentType.startsWith("video/");
+            return contentType.startsWith("image/") || contentType.equals("application/pdf") ||
+                    contentType.startsWith("video/");
         }
 
         return false;

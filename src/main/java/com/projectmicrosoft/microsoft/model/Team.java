@@ -3,9 +3,13 @@ package com.projectmicrosoft.microsoft.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "teams")
 public class Team {
@@ -34,45 +38,4 @@ public class Team {
     @Schema(description = "Users")
     private List<User> users;
 
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getNumbersOfUsers() {
-        return numbersOfUsers;
-    }
-
-    public void setNumbersOfUsers(int numbersOfUsers) {
-        this.numbersOfUsers = numbersOfUsers;
-    }
-
-    public Long getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Long creator) {
-        this.creator = creator;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 }

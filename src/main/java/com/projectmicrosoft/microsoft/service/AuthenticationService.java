@@ -1,10 +1,9 @@
 package com.projectmicrosoft.microsoft.service;
 
 
-import com.projectmicrosoft.microsoft.api.DTO.LoginBody;
-import com.projectmicrosoft.microsoft.api.DTO.LoginResponse;
-import com.projectmicrosoft.microsoft.api.DTO.PasswordResetBody;
-import com.projectmicrosoft.microsoft.api.DTO.RegistrationBody;
+import com.projectmicrosoft.microsoft.api.dto.LoginBody;
+import com.projectmicrosoft.microsoft.api.dto.PasswordResetBody;
+import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
 import com.projectmicrosoft.microsoft.enums.UserRoles;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
@@ -14,33 +13,31 @@ import com.projectmicrosoft.microsoft.model.VerificationToken;
 import com.projectmicrosoft.microsoft.repository.TokenRepository;
 import com.projectmicrosoft.microsoft.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import com.projectmicrosoft.microsoft.api.DTO.LoginResponse;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+
     private final EncryptionService encryptionService;
+
     private final EmailService emailService;
+
     private final TokenRepository tokenRepository;
+
     private final JWTService jwtService;
+
     private final ModelMapper modelMapper;
 
-
-    public AuthenticationService(UserRepository userRepository, EncryptionService encryptionService,
-                                 EmailService emailService, TokenRepository tokenRepository, JWTService jwtService, ModelMapper modelMapper) {
-        this.userRepository = userRepository;
-        this.encryptionService = encryptionService;
-        this.emailService = emailService;
-        this.tokenRepository = tokenRepository;
-        this.jwtService = jwtService;
-        this.modelMapper = modelMapper;
-    }
 
     @Transactional
     public User registerUser(RegistrationBody registrationBody) throws EmailFailureException {

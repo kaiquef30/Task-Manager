@@ -4,6 +4,7 @@ package com.projectmicrosoft.microsoft.service;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.model.VerificationToken;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -12,6 +13,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 @CacheConfig(cacheNames = "emailCache")
 public class EmailService {
@@ -24,9 +26,6 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
 
-    public EmailService(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
 
     private SimpleMailMessage makeMailMessage() {
         var simpleMailMessage = new SimpleMailMessage();

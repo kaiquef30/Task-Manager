@@ -1,6 +1,6 @@
 package com.projectmicrosoft.microsoft.api.controller.client;
 
-import com.projectmicrosoft.microsoft.api.DTO.ClientDTO;
+import com.projectmicrosoft.microsoft.api.dto.ClientDTO;
 import com.projectmicrosoft.microsoft.api.security.AuthenticatedUser;
 import com.projectmicrosoft.microsoft.exception.ClientNotFoundException;
 import com.projectmicrosoft.microsoft.exception.messages.ClientMessageConfig;
@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,18 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/clients")
+@RequestMapping("/api/client")
 public class ClientController {
 
     private final ClientService clientService;
     private final ClientMessageConfig clientMessageConfig;
-
-    public ClientController(ClientService clientService, ClientMessageConfig clientMessageConfig) {
-        this.clientService = clientService;
-        this.clientMessageConfig = clientMessageConfig;
-    }
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Display all customers")

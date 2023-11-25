@@ -1,5 +1,5 @@
 package com.projectmicrosoft.microsoft.exception;
 
-public class EmailFailureException extends Exception{
+public class EmailFailureException extends RuntimeException {
 
 }

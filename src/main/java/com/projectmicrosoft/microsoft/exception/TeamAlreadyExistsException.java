@@ -1,4 +1,4 @@
 package com.projectmicrosoft.microsoft.exception;
 
-public class TeamAlreadyExistsException extends Exception{
+public class TeamAlreadyExistsException extends RuntimeException {
 }

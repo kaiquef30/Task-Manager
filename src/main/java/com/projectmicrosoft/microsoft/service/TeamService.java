@@ -1,6 +1,6 @@
 package com.projectmicrosoft.microsoft.service;
 
-import com.projectmicrosoft.microsoft.api.DTO.TeamDTO;
+import com.projectmicrosoft.microsoft.api.dto.TeamDTO;
 import com.projectmicrosoft.microsoft.exception.TeamAlreadyExistsException;
 import com.projectmicrosoft.microsoft.exception.TeamNotFoundException;
 import com.projectmicrosoft.microsoft.exception.UserIsAlreadyOnTheTeam;
@@ -10,6 +10,7 @@ import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.repository.TeamRepository;
 import com.projectmicrosoft.microsoft.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class TeamService {
 
@@ -29,14 +31,8 @@ public class TeamService {
 
     private final ModelMapper modelMapper;
 
-    public TeamService(UserRepository userRepository, TeamRepository teamRepository, ModelMapper modelMapper) {
-        this.userRepository = userRepository;
-        this.teamRepository = teamRepository;
-        this.modelMapper = modelMapper;
-    }
 
-
-    @Cacheable(value = "teamCache", key = "T(org.springframework.util.ClassUtils).getShortName('Team')") // Cache all teams
+    @Cacheable(value = "teamCache", key = "T(org.springframework.util.ClassUtils).getShortName('Team')")
     public List<Team> getAllTeams() {
         return teamRepository.findAll();
     }
@@ -50,7 +46,7 @@ public class TeamService {
     }
 
     @Transactional
-    @CacheEvict(value = "teamCache", allEntries = true) // Clear cache when a new team is created
+    @CacheEvict(value = "teamCache", allEntries = true)
     public Team createTeam(TeamDTO teamDTO) throws TeamAlreadyExistsException {
         getTeamNameOrThrow(teamDTO.getName());
         Team team = modelMapper.map(teamDTO, Team.class);
@@ -60,7 +56,7 @@ public class TeamService {
     }
 
     @Transactional
-    @CacheEvict(value = "teamCache", key = "#teamId") // Clear cache when a team is updated
+    @CacheEvict(value = "teamCache", key = "#teamId")
     public Team updateTeam(Long teamId, TeamDTO updatedTeamDto) throws TeamNotFoundException {
         Optional<Team> existingTeamOptional = teamRepository.findById(teamId);
         if (existingTeamOptional.isPresent()) {
@@ -72,7 +68,7 @@ public class TeamService {
     }
 
     @Transactional
-    @CacheEvict(value = "teamCache", key = "#teamId") // Clear cache when a team is deleted
+    @CacheEvict(value = "teamCache", key = "#teamId")
     public void deleteTeam(Long teamId) throws TeamNotFoundException {
         if (teamRepository.existsById(teamId)) {
             teamRepository.deleteById(teamId);
@@ -82,7 +78,8 @@ public class TeamService {
     }
 
     @Transactional
-    public void addUserToTeam(Long teamId, Long userId) throws TeamNotFoundException, UserNotFoundException, UserIsAlreadyOnTheTeam {
+    public void addUserToTeam(Long teamId, Long userId) throws TeamNotFoundException, UserNotFoundException,
+            UserIsAlreadyOnTheTeam {
         Team team = getTeamOrThrow(teamId);
         User user = getUserOrThrow(userId);
 
