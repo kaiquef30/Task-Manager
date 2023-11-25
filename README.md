@@ -96,7 +96,7 @@
   - 🚫 `DELETE /api/teams/{teamId}/removeUser/{userId}`
   - Remove a user from a team.
 
-## Technologies Used
+## Some of the technologies used
 
 Our Authentication and Management API has been developed using the following technologies:
 
