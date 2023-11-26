@@ -1,7 +1,7 @@
 package com.microsoft.service;
 
-import com.projectmicrosoft.microsoft.api.DTO.LoginResponse;
 import com.projectmicrosoft.microsoft.api.dto.LoginBody;
+import com.projectmicrosoft.microsoft.api.dto.LoginResponse;
 import com.projectmicrosoft.microsoft.api.dto.PasswordResetBody;
 import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;

@@ -22,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/task")
@@ -39,7 +42,9 @@ public class TaskController {
     @GetMapping
     public ResponseEntity<List<Task>> getAllTasks() {
         List<Task> allTasks = taskService.getAllTasks();
-        return ResponseEntity.ok(allTasks);
+        return ResponseEntity.ok(allTasks.stream().map(task ->
+                task.add(linkTo(methodOn(TaskController.class).getTaskById(task.getId())).withRel("sla")))
+                .toList());
     }
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})

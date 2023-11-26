@@ -22,9 +22,11 @@ public class TaskDTO {
     @NotNull
     @NotBlank
     private String title;
+
     @NotNull
     @NotBlank
     private String description;
+
     @NotNull
     private Date dueDate;
 

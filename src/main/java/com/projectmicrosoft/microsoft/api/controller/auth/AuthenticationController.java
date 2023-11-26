@@ -1,8 +1,8 @@
 package com.projectmicrosoft.microsoft.api.controller.auth;
 
 
-import com.projectmicrosoft.microsoft.api.DTO.LoginResponse;
 import com.projectmicrosoft.microsoft.api.dto.LoginBody;
+import com.projectmicrosoft.microsoft.api.dto.LoginResponse;
 import com.projectmicrosoft.microsoft.api.dto.PasswordResetBody;
 import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
 import com.projectmicrosoft.microsoft.exception.EmailFailureException;
@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,6 +46,9 @@ public class AuthenticationController {
         } catch (EmailFailureException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(authenticationMessageConfig.getInternalServerError());
+        }
+        catch (InvalidCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(authenticationMessageConfig.getUserAlreadyExists());
         }
     }
 

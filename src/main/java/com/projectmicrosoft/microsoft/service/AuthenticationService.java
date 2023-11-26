@@ -2,10 +2,10 @@ package com.projectmicrosoft.microsoft.service;
 
 
 import com.projectmicrosoft.microsoft.api.dto.LoginBody;
+import com.projectmicrosoft.microsoft.api.dto.LoginResponse;
 import com.projectmicrosoft.microsoft.api.dto.PasswordResetBody;
 import com.projectmicrosoft.microsoft.api.dto.RegistrationBody;
 import com.projectmicrosoft.microsoft.enums.UserRoles;
-import com.projectmicrosoft.microsoft.exception.EmailFailureException;
 import com.projectmicrosoft.microsoft.exception.EmailNotFoundException;
 import com.projectmicrosoft.microsoft.exception.InvalidCredentialsException;
 import com.projectmicrosoft.microsoft.model.User;
@@ -16,7 +16,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import com.projectmicrosoft.microsoft.api.DTO.LoginResponse;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -40,16 +39,17 @@ public class AuthenticationService {
 
 
     @Transactional
-    public User registerUser(RegistrationBody registrationBody) throws EmailFailureException {
+    public User registerUser(RegistrationBody registrationBody) {
+        userAlreadyExists(registrationBody.getEmail());
         User user = modelMapper.map(registrationBody, User.class);
-        user.setRoles(List.of(UserRoles.USER));
+        user.setRoles(List.of(UserRoles.ADMIN));
         user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
         VerificationToken verificationToken = createVerificationToken(user);
         emailService.sendVerificationEmail(verificationToken);
         return userRepository.save(user);
     }
 
-    public LoginResponse loginUser(LoginBody loginBody) throws EmailFailureException {
+    public LoginResponse loginUser(LoginBody loginBody) {
         User user = findUserByEmail(loginBody.getEmail());
         validatePassword(loginBody.getPassword(), user);
 
@@ -58,6 +58,7 @@ public class AuthenticationService {
     }
 
 
+    @Transactional
     public boolean verifyUser(String token) {
         Optional<VerificationToken> opToken = tokenRepository.findByToken(token);
         if (opToken.isPresent()) {
@@ -73,7 +74,7 @@ public class AuthenticationService {
         return false;
     }
 
-    public void forgotPassword(String email) throws EmailFailureException, EmailNotFoundException {
+    public void forgotPassword(String email) {
         Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -95,10 +96,11 @@ public class AuthenticationService {
         }
     }
 
-    public LoginResponse handleUnverifiedUser(User user) throws EmailFailureException {
+    public LoginResponse handleUnverifiedUser(User user) {
         List<VerificationToken> verificationTokens = user.getVerificationTokens();
         boolean resend = verificationTokens.isEmpty() ||
-                verificationTokens.get(0).getCreatedTimestamp().before(new Timestamp(System.currentTimeMillis() - (60 * 60 * 1000)));
+                verificationTokens.get(0).getCreatedTimestamp()
+                        .before(new Timestamp(System.currentTimeMillis() - (60 * 60 * 1000)));
         if (resend) {
             VerificationToken verificationToken = createVerificationToken(user);
             tokenRepository.save(verificationToken);
@@ -129,6 +131,13 @@ public class AuthenticationService {
 
     public void validatePassword(String inputPassword, User user) {
         if (!encryptionService.verifyPassword(inputPassword, user.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+    }
+
+    public void userAlreadyExists(String email) {
+        Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
+        if (optionalUser.isPresent()) {
             throw new InvalidCredentialsException();
         }
     }

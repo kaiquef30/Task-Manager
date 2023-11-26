@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "authentication.message")
 public class AuthenticationMessageConfig {
 
+    private String userAlreadyExists;
+
     private String forgotPasswordOk;
 
     private String userSuccessfullyRegistered;
