@@ -36,7 +36,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testRegisterClient() {
+     void testRegisterClient() {
         var clientDto = new ClientDTO();
         var client = new Client();
 
@@ -53,7 +53,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testGetClientById() {
+     void testGetClientById() {
         Long clientId = 1L;
         Client client = new Client();
 
@@ -68,7 +68,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testGetAllClients() {
+     void testGetAllClients() {
         List<Client> clients = List.of(new Client(), new Client());
 
         when(clientRepository.findAll()).thenReturn(clients);
@@ -81,13 +81,12 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testUpdateClient() throws ClientNotFoundException {
+     void testUpdateClient() throws ClientNotFoundException {
         Long clientId = 1L;
         ClientDTO clientDto = new ClientDTO();
         Client existingClient = new Client();
 
         when(clientRepository.findById(clientId)).thenReturn(Optional.of(existingClient));
-//        when(modelMapper.map(clientDto, existingClient)).thenReturn(existingClient);
         when(clientRepository.save(existingClient)).thenReturn(existingClient);
 
         Client result = clientService.updateClient(clientId, clientDto);
@@ -101,7 +100,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testUpdateClient_ClientNotFoundException() {
+     void testUpdateClient_ClientNotFoundException() {
         Long clientId = 1L;
         ClientDTO clientDto = new ClientDTO();
 
@@ -116,7 +115,7 @@ public class ClientServiceTest {
 
 
     @Test
-    public void testDeleteClient() {
+     void testDeleteClient() {
         Long clientId = 1L;
 
         when(clientRepository.existsById(clientId)).thenReturn(true);
@@ -128,7 +127,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testDeleteClient_ClientNotFoundException() {
+     void testDeleteClient_ClientNotFoundException() {
         Long clientId = 1L;
 
         when(clientRepository.existsById(clientId)).thenReturn(false);
@@ -138,4 +137,5 @@ public class ClientServiceTest {
         verify(clientRepository).existsById(clientId);
         verify(clientRepository, never()).deleteById(any());
     }
+
 }

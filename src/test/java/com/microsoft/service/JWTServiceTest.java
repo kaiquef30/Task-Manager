@@ -17,13 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JWTServiceTest {
 
+    @Mock
     private JWTService jwtService;
 
     @Mock
     private DecodedJWT decodedJWT;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         MockitoAnnotations.openMocks(this);
         jwtService = new JWTService();
         ReflectionTestUtils.setField(jwtService, "algorithmKey", "yourAlgorithmKey");
@@ -32,7 +33,7 @@ public class JWTServiceTest {
     }
 
     @Test
-    public void testGenerateJWT() {
+     void testGenerateJWT() {
         var user = new User();
         user.setEmail("test@example.com");
         String jwt = jwtService.generateJWT(user);
@@ -40,7 +41,7 @@ public class JWTServiceTest {
     }
 
     @Test
-    public void testGenerateVerificationJWT() {
+     void testGenerateVerificationJWT() {
         User user = new User();
         user.setEmail("test@example.com");
         String jwt = jwtService.generateVerificationJWT(user);
@@ -48,7 +49,7 @@ public class JWTServiceTest {
     }
 
     @Test
-    public void testGeneratePasswordResetJWT() {
+     void testGeneratePasswordResetJWT() {
         User user = new User();
         user.setEmail("test@example.com");
         String jwt = jwtService.generatePasswordResetJWT(user);
@@ -56,7 +57,7 @@ public class JWTServiceTest {
     }
 
     @Test
-    public void testCalculateExpirationTime() {
+     void testCalculateExpirationTime() {
         long expirationDurationInSeconds = 3600;
         Date expirationTime = jwtService.calculateExpirationTime(expirationDurationInSeconds);
         assertNotNull(expirationTime);
