@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "teams")
-public class Team {
+public class Team extends RepresentationModel<Team> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

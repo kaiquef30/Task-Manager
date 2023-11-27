@@ -37,12 +37,10 @@ public class TeamService {
         return teamRepository.findAll();
     }
 
-    @Cacheable(value = "teamCache", key = "#teamId") // Cache team by ID
-    public Optional<Team> getTeamById(Long teamId) {
-        if (teamRepository.existsById(teamId)) {
-            return teamRepository.findById(teamId);
-        }
-        throw new TeamNotFoundException();
+
+    @Cacheable(value = "teamCache", key = "#teamId")
+    public Team getTeamById(Long teamId) {
+       return teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
     }
 
     @Transactional

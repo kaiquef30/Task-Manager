@@ -6,6 +6,7 @@ import com.projectmicrosoft.microsoft.exception.TaskNotFoundException;
 import com.projectmicrosoft.microsoft.model.Task;
 import com.projectmicrosoft.microsoft.model.User;
 import com.projectmicrosoft.microsoft.repository.TaskRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -35,11 +36,12 @@ public class TaskService {
     }
 
     @CacheEvict(value = "taskCache", key = "'allTasks'", allEntries = true)
+    @Transactional
     public Task createTask(TaskDTO taskDto, MultipartFile[] attachments) throws IOException, InvalidAttachmentException {
         Task task = modelMapper.map(taskDto, Task.class);
 
         Long currentUserId = getCurrentUserId();
-        User creator = new User();
+        var creator = new User();
         creator.setId(currentUserId);
         task.setAssignee(creator);
 
@@ -66,6 +68,7 @@ public class TaskService {
     }
 
     @CacheEvict(value = "taskCache", key = "'allTasks'", allEntries = true)
+    @Transactional
     public Task updateTask(Long taskId, TaskDTO taskDto, MultipartFile[] attachments) throws IOException {
         Task updatedTask = modelMapper.map(taskDto, Task.class);
         if (attachments != null && attachments.length > 0) {
@@ -86,13 +89,13 @@ public class TaskService {
     }
 
     @Cacheable(value = "taskCache", key = "#taskId")
-    public Task getTaskById(Long taskId) throws TaskNotFoundException {
+    public Task getTaskById(Long taskId) {
         return taskRepository.findById(taskId)
                 .orElseThrow(TaskNotFoundException::new);
     }
 
     @CacheEvict(value = "taskCache", key = "#taskId")
-    public void deleteTask(Long taskId) throws TaskNotFoundException {
+    public void deleteTask(Long taskId) {
         if (taskRepository.existsById(taskId)) {
             taskRepository.deleteById(taskId);
         } else {
@@ -116,7 +119,7 @@ public class TaskService {
         }
     }
 
-    private Task getTaskOrThrow(Long taskId) throws TaskNotFoundException {
+    private Task getTaskOrThrow(Long taskId) {
         Optional<Task> taskOptional = taskRepository.findById(taskId);
         if (taskOptional.isPresent()) {
             return taskOptional.get();

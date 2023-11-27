@@ -43,16 +43,18 @@ public class TaskController {
     public ResponseEntity<List<Task>> getAllTasks() {
         List<Task> allTasks = taskService.getAllTasks();
         return ResponseEntity.ok(allTasks.stream().map(task ->
-                task.add(linkTo(methodOn(TaskController.class).getTaskById(task.getId())).withRel("sla")))
+                task.add(linkTo(methodOn(TaskController.class).getTaskById(task.getId())).withRel("go to task")))
                 .toList());
     }
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "View all tasks for a given user")
-    @GetMapping("/user-tasks")
-    public ResponseEntity<List<Task>> getAllTasksForCurrentUser(@RequestParam Long userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Task>> getAllTasksForCurrentUser(@PathVariable Long userId) {
             List<Task> allTasksForCurrentUser = taskService.getAllTasksForCurrentUser();
-            return ResponseEntity.ok(allTasksForCurrentUser);
+            return ResponseEntity.ok(allTasksForCurrentUser.stream().map(task ->
+                    task.add(linkTo(methodOn(TaskController.class).getAllTasks()).withRel("Return to all tasks")))
+                    .toList());
     }
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
@@ -94,17 +96,16 @@ public class TaskController {
         }
     }
 
-    @AuthenticatedUser(requiredRoles = {"USER"})
+    @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Search task by id")
     @ApiResponse(responseCode = "200", description = "Task found successfully.",
             content = @Content)
     @ApiResponse(responseCode = "404", description = "Task not found.", content = @Content)
     @GetMapping("/search/{taskId}")
     public ResponseEntity<?> getTaskById(@PathVariable Long taskId) {
-        Task taskFound;
         try {
-            taskFound = taskService.getTaskById(taskId);
-            return ResponseEntity.status(HttpStatus.OK).body(taskFound);
+            return ResponseEntity.status(HttpStatus.OK).body(taskService.getTaskById(taskId)
+                    .add(linkTo(methodOn(TaskController.class).getAllTasks()).withRel("Return to all tasks")));
         } catch (TaskNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(taskMessageConfig.getTaskNotFound());
         }
