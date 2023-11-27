@@ -96,7 +96,7 @@
   - 🚫 `DELETE /api/teams/{teamId}/removeUser/{userId}`
   - Remove a user from a team.
 
-## Technologies Used
+## Some of the technologies used
 
 Our Authentication and Management API has been developed using the following technologies:
 
@@ -127,5 +127,7 @@ Our Authentication and Management API has been developed using the following tec
 - 🔄 **Redis**: A high-performance, in-memory data store used for caching and session management.
   
 - ⚙️ **AspectJ**: Utilized for aspect-oriented programming (AOP) to modularize cross-cutting concerns such as logging, security, and transaction management in a clean and efficient manner.
+
+- 🛠️ Lombok: Used to simplify and reduce boilerplate code in Java classes. Lombok provides annotations like @Data, @Getter, @Setter, and more, to automatically generate methods such as getters, setters, and constructors, enhancing code conciseness and maintainability.
 
 These technologies were chosen to create a robust, secure, and high-performance API that meets the needs of user authentication, client and task management, and team collaboration.
