@@ -1,10 +1,10 @@
 package com.microsoft.service;
 
-import com.projectmicrosoft.microsoft.api.dto.ClientDTO;
-import com.projectmicrosoft.microsoft.exception.ClientNotFoundException;
-import com.projectmicrosoft.microsoft.model.Client;
-import com.projectmicrosoft.microsoft.repository.ClientRepository;
-import com.projectmicrosoft.microsoft.service.ClientService;
+import com.project.task.manager.dto.ClientDTO;
+import com.project.task.manager.exception.ClientNotFoundException;
+import com.project.task.manager.model.Client;
+import com.project.task.manager.repository.ClientRepository;
+import com.project.task.manager.service.ClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

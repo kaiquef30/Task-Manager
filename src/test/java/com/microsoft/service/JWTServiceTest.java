@@ -1,8 +1,8 @@
 package com.microsoft.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.projectmicrosoft.microsoft.model.User;
-import com.projectmicrosoft.microsoft.service.JWTService;
+import com.project.task.manager.model.User;
+import com.project.task.manager.service.JWTService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
