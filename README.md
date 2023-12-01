@@ -1,4 +1,4 @@
-# Authentication and Management API
+# Authentication and Management API RESTful
 
 🔐 Welcome to our Authentication and Management API, where we provide essential features for user registration, login, client management, task creation, and team management.
 
