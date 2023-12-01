@@ -21,6 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -40,8 +43,11 @@ public class ClientResource {
                     direction = Sort.Direction.ASC,
                     size = 3
             ) Pageable page) {
-        List<Client> clients = clientService.getAllClients(page);
-        return ResponseEntity.ok(clients);
+        List<Client> allClients = clientService.getAllClients(page);
+        return ResponseEntity.ok(allClients.stream().map(client -> client
+                        .add(linkTo(methodOn(ClientResource.class)
+                                .getClientById(client.getId())).withRel("go to client")))
+                .toList());
     }
 
     @AuthenticatedUser(requiredRoles = {"ADMIN"})
@@ -55,19 +61,25 @@ public class ClientResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientRegistered);
     }
 
-    @AuthenticatedUser(requiredRoles = {"USER"})
+    @AuthenticatedUser(requiredRoles = {"ADMIN"})
     @Operation(summary = "Search customer by name")
     @ApiResponse(responseCode = "200", description = "Customer successfully found.",
             content = {@Content(schema = @Schema(implementation = Client.class))})
     @ApiResponse(responseCode = "404", description = "Customer not found.", content = @Content)
     @GetMapping("/{clientId}")
-    public ResponseEntity<Client> getClientById(@PathVariable Long clientId) {
-        return clientService.getClientById(clientId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getClientById(@PathVariable Long clientId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(clientService.getClientById(clientId)
+                    .add(linkTo(methodOn(ClientResource.class).getAllClients(Pageable.unpaged()))
+                            .withRel("Return to all clients")));
+        }
+        catch (ClientNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(clientMessageConfig.getClientNotFound());
+        }
     }
 
-    @AuthenticatedUser(requiredRoles = {"ADMIN"})
+    @AuthenticatedUser(requiredRoles = {"ADMIN", "USER"})
     @Operation(summary = "Delete customer")
     @ApiResponse(responseCode = "204", description = "Customer successfully deleted.", content = @Content)
     @ApiResponse(responseCode = "404", description = "Customer not found.", content = @Content)

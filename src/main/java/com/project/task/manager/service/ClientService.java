@@ -34,8 +34,9 @@ public class ClientService {
 
 
     @Cacheable(value = "clientCache", key = "#clientId")
-    public Optional<Client> getClientById(Long clientId) {
-        return clientRepository.findById(clientId);
+    public Client getClientById(Long clientId) {
+        return clientRepository.findById(clientId)
+                .orElseThrow(ClientNotFoundException::new);
     }
 
 
