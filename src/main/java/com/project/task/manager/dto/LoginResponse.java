@@ -9,7 +9,6 @@ import lombok.Setter;
 @Hidden
 public class LoginResponse {
 
-    @Getter
     private boolean success;
     private String jwt;
     private String failureReason;
