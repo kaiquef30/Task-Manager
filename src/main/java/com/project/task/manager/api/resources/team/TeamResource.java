@@ -2,7 +2,7 @@ package com.project.task.manager.api.resources.team;
 
 
 import com.project.task.manager.dto.TeamDTO;
-import com.project.task.manager.infra.security.AuthenticatedUser;
+import com.project.task.manager.security.AuthenticatedUser;
 import com.project.task.manager.exception.TeamAlreadyExistsException;
 import com.project.task.manager.exception.TeamNotFoundException;
 import com.project.task.manager.exception.UserIsAlreadyOnTheTeam;

@@ -1,7 +1,7 @@
 package com.project.task.manager.api.resources.client;
 
 import com.project.task.manager.dto.ClientDTO;
-import com.project.task.manager.infra.security.AuthenticatedUser;
+import com.project.task.manager.security.AuthenticatedUser;
 import com.project.task.manager.exception.ClientNotFoundException;
 import com.project.task.manager.exception.messages.ClientMessageConfig;
 import com.project.task.manager.model.Client;

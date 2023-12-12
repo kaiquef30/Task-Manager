@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,25 +62,26 @@ public class ClientServiceTest {
 
         when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
 
-        Optional<Client> result = clientService.getClientById(clientId);
+        Client result = clientService.getClientById(clientId);
 
-        assertTrue(result.isPresent());
-        assertEquals(client, result.get());
+        assertNotNull(result);
+        assertEquals(client, result);
 
         verify(clientRepository).findById(clientId);
     }
 
     @Test
-     void testGetAllClients() {
+    void testGetAllClients() {
         List<Client> clients = List.of(new Client(), new Client());
+        Pageable pageable = PageRequest.of(0, 10);
 
-        when(clientRepository.findAll()).thenReturn(clients);
+        when(clientRepository.findAll(pageable)).thenReturn(new PageImpl<>(clients));
 
-        List<Client> result = clientService.getAllClients();
+        List<Client> result = clientService.getAllClients(pageable);
 
         assertEquals(clients, result);
 
-        verify(clientRepository).findAll();
+        verify(clientRepository).findAll(pageable);
     }
 
     @Test

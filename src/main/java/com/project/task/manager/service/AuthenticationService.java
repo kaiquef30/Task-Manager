@@ -37,6 +37,11 @@ public class AuthenticationService {
 
     private final ModelMapper modelMapper;
 
+    private static final String USER_NOT_VERIFIED_EMAIL_RESENT = "User not verified. Verification email resent.";
+
+    private static final String USER_NOT_VERIFIED = "User not verified. Please check your email inbox.";
+
+
 
     @Transactional
     public User registerUser(RegistrationBody registrationBody) {
@@ -53,9 +58,16 @@ public class AuthenticationService {
         User user = findUserByEmail(loginBody.getEmail());
         validatePassword(loginBody.getPassword(), user);
 
+        LoginResponse unverifiedUserResponse = handleUnverifiedUser(user);
+
+        if (!unverifiedUserResponse.isSuccess()) {
+            return unverifiedUserResponse;
+        }
+
         String jwt = jwtService.generateJWT(user);
         return new LoginResponse(true, jwt);
     }
+
 
 
     @Transactional
@@ -100,13 +112,13 @@ public class AuthenticationService {
         List<VerificationToken> verificationTokens = user.getVerificationTokens();
         boolean resend = verificationTokens.isEmpty() ||
                 verificationTokens.get(0).getCreatedTimestamp()
-                        .before(new Timestamp(System.currentTimeMillis() - (60 * 60 * 1000)));
+                        .before(new Timestamp(System.currentTimeMillis() - (60 * 1000)));
         if (resend) {
             VerificationToken verificationToken = createVerificationToken(user);
             tokenRepository.save(verificationToken);
             emailService.sendVerificationEmail(verificationToken);
         }
-        String reason = resend ? "USER_NOT_VERIFIED_EMAIL_RESENT" : "USER_NOT_VERIFIED";
+        String reason = resend ? USER_NOT_VERIFIED_EMAIL_RESENT : USER_NOT_VERIFIED;
         return new LoginResponse(false, reason);
     }
 

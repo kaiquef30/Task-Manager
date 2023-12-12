@@ -1,4 +1,4 @@
-package com.project.task.manager.infra.security;
+package com.project.task.manager.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -2,7 +2,7 @@ package com.project.task.manager.api.resources.task;
 
 
 import com.project.task.manager.dto.TaskDTO;
-import com.project.task.manager.infra.security.AuthenticatedUser;
+import com.project.task.manager.security.AuthenticatedUser;
 import com.project.task.manager.exception.InvalidAttachmentException;
 import com.project.task.manager.exception.TaskNotFoundException;
 import com.project.task.manager.exception.messages.ClientMessageConfig;
