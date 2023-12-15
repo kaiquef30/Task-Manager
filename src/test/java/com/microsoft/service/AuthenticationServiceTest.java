@@ -1,7 +1,6 @@
 package com.microsoft.service;
 
 import com.project.task.manager.dto.LoginBody;
-import com.project.task.manager.dto.LoginResponse;
 import com.project.task.manager.dto.PasswordResetBody;
 import com.project.task.manager.dto.RegistrationBody;
 import com.project.task.manager.exception.EmailFailureException;
@@ -18,7 +17,6 @@ import com.project.task.manager.service.JWTService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
@@ -76,29 +74,15 @@ public class AuthenticationServiceTest {
         assertNotNull(registeredUser);
     }
 
-
     @Test
-    public void testSuccessfulLogin() throws EmailFailureException {
+    public void testLoginUser_InvalidCredentialsException() {
+        LoginBody loginBody = new LoginBody();
+        loginBody.setEmail("nonexistent@example.com");
+        loginBody.setPassword("invalidPassword");
+        when(userRepository.findByEmailIgnoreCase(loginBody.getEmail())).thenThrow(InvalidCredentialsException.class);
 
-        var loginBody = new LoginBody();
-        User user = new User();
-
-        loginBody.setEmail("example@email.com");
-        loginBody.setPassword("password");
-
-        user.setEmail("example@email.com");
-        user.setPassword("hashedPassword");
-
-        String mockJWT = "mockedJWT";
-
-        Mockito.when(userRepository.findByEmailIgnoreCase(loginBody.getEmail())).thenReturn(Optional.of(user));
-        Mockito.when(jwtService.generateJWT(user)).thenReturn(mockJWT);
-        Mockito.when(encryptionService.verifyPassword(loginBody.getPassword(), user.getPassword())).thenReturn(true);
-
-        LoginResponse response = authenticationService.loginUser(loginBody);
-
-        assertTrue(response.isSuccess());
-        assertEquals(mockJWT, response.getJwt());
+        assertThrows(InvalidCredentialsException.class, () -> authenticationService.loginUser(loginBody));
+        verifyNoMoreInteractions(encryptionService, jwtService, emailService, tokenRepository);
     }
 
     @Test

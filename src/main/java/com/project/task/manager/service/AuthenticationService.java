@@ -69,7 +69,6 @@ public class AuthenticationService {
     }
 
 
-
     @Transactional
     public boolean verifyUser(String token) {
         Optional<VerificationToken> opToken = tokenRepository.findByToken(token);
