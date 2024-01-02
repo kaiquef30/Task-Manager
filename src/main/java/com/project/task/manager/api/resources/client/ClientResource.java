@@ -56,7 +56,7 @@ public class ClientResource {
             content = {@Content(schema = @Schema(implementation = Client.class))})
     @ApiResponse(responseCode = "409", description = "Client already exists!", content = @Content)
     @PostMapping("/create")
-    public ResponseEntity<?> registerClient(@RequestBody @Valid ClientDTO clientDto, @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> registerClient(@RequestBody @Valid ClientDTO clientDto) {
         Client clientRegistered = clientService.registerClient(clientDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(clientRegistered);
     }
